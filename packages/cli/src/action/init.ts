@@ -1,16 +1,16 @@
-import { exec } from '../utils'
+import { execCommand } from '../utils'
 
 export default async () => {
   console.log('skr init start！')
   try {
-    await exec('npm list lerna', false)
+    await execCommand('npm list lerna', false)
   } catch (e) {
-    await exec('npm install lerna -g')
+    await execCommand('npm install lerna -g')
   }
   try {
-    await exec('yarn -v', false)
+    await execCommand('yarn -v', false)
   } catch (e) {
-    await exec('npm install yarn -g')
+    await execCommand('npm install yarn -g')
   }
   console.log('skr init success！')
 }
