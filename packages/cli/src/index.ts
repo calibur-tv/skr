@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import cac from 'cac'
 import { version } from '../package.json'
+import publish from './action/publish'
 import init from './action/init'
 import boot from './action/boot'
 import run from './action/run'
@@ -21,6 +22,8 @@ skr
   .option('-D', '添加包到 devDependencies')
   .option('-P', '添加包到 peerDependencies')
   .action(add)
+
+skr.command('publish', '收集项目依赖').action(publish)
 
 skr.version(version)
 
