@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { spawn, exec } from 'child-process-promise'
+import toposort from 'toposort'
 
 const execCommand = (action: string, log = true): Promise<any> => {
   const arr: string[] = action.split(' ')
@@ -21,7 +22,7 @@ const execCommand = (action: string, log = true): Promise<any> => {
   return promise
 }
 
-const getPackagesInfo = async () => {
+const getRepositoryPackages = async () => {
   const info = await exec('lerna ls --json')
   const stdout = JSON.parse(info.stdout)
   const pkg = stdout.map((_: Record<string, any>) => {
@@ -46,7 +47,7 @@ const getRemotePackageInfo = async (name: string) => {
 }
 
 const getPkgJson = async (name: string): Promise<Record<string, any>> => {
-  const { detail } = await getPackagesInfo()
+  const { detail } = await getRepositoryPackages()
   const pkg = detail.find((_: Record<string, any>) => _.name === name)
   if (!pkg) {
     // TODO
@@ -55,7 +56,7 @@ const getPkgJson = async (name: string): Promise<Record<string, any>> => {
 }
 
 const updatePackageJson = async (name: string, value: string): Promise<any> => {
-  const { detail } = await getPackagesInfo()
+  const { detail } = await getRepositoryPackages()
   const pkg = detail.find((_: Record<string, any>) => _.name === name)
   if (!pkg) {
     // TODO
@@ -64,19 +65,47 @@ const updatePackageJson = async (name: string, value: string): Promise<any> => {
   fs.writeFileSync(`${pkg.location}/package.json`, JSON.stringify(value, '', 2))
 }
 
-const getDependencies = async (
-  name: string,
-  list: Record<string, any>[]
-): Promise<string[]> => {
-  const json = await getPkgJson(name)
-  const dependencies = Object.keys(json?.dependencies || {})
-  return list.filter((_) => dependencies.includes(_.name)).map((_) => _.name)
+const getPackageDependencies = async (
+  packageName: string,
+  list?: Record<string, any>[],
+  tsort?: [string, string][]
+) => {
+  if (!list) {
+    const repositoryPackages = await getRepositoryPackages()
+    list = repositoryPackages.detail
+  }
+
+  if (!tsort) {
+    tsort = []
+  }
+
+  const core = async (
+    name: string,
+    list: Record<string, any>[]
+  ): Promise<string[]> => {
+    const json = await getPkgJson(name)
+    const dependencies = Object.keys(json?.dependencies || {})
+    return list.filter((_) => dependencies.includes(_.name)).map((_) => _.name)
+  }
+
+  const dependencies = await core(packageName, list as Record<string, any>[])
+  if (dependencies.length) {
+    dependencies.forEach((dependencyName: string) => {
+      ;(tsort as [string, string][]).push([packageName, dependencyName])
+    })
+
+    for (let i = 0; i < dependencies.length; i++) {
+      await getPackageDependencies(dependencies[i], list, tsort)
+    }
+  }
+
+  return toposort(tsort).reverse()
 }
 
 export {
   execCommand,
-  getPackagesInfo,
-  getDependencies,
+  getRepositoryPackages,
+  getPackageDependencies,
   updatePackageJson,
   getRemotePackageInfo
 }

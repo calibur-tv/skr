@@ -15,7 +15,12 @@ export default async () => {
   })
 
   const dependencies = await getPackageDependencies(name)
-  dependencies.forEach((item: string) => {
-    execCommand(`lerna run build:${item}`)
-  })
+  const command = [
+    'prepatch',
+    '--preid beta',
+    `--force-publish=${name},${dependencies.join(',')}`,
+    '--yes'
+  ]
+  await execCommand(`lerna version ${command.join(' ')}`)
+  await execCommand('lerna publish from-git --dist-tag beta --yes')
 }

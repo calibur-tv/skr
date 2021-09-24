@@ -1,11 +1,11 @@
 import inquirer from 'inquirer'
-import { getPackagesInfo, execCommand } from '../utils'
+import { getRepositoryPackages, execCommand } from '../utils'
 
 export default async (
   packageName: string,
   options: Record<string, any>
 ): Promise<any> => {
-  const { list } = await getPackagesInfo()
+  const { list } = await getRepositoryPackages()
   const { name } = await inquirer.prompt({
     type: 'list',
     name: 'name',
