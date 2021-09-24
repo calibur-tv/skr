@@ -15,7 +15,7 @@ export default async () => {
   })
 
   const dependencies = await getPackageDependencies(name)
-  dependencies.forEach((item: string) => {
-    execCommand(`lerna run build:${item}`)
-  })
+  for (let i = 0; i < dependencies.length; i++) {
+    await execCommand(`lerna run build:${dependencies[i]}`)
+  }
 }

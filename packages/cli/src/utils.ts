@@ -22,15 +22,17 @@ const execCommand = (action: string, log = true): Promise<any> => {
   return promise
 }
 
-const getRepositoryPackages = async () => {
+const getRepositoryPackages = async (noPrivate = false) => {
   const info = await exec('lerna ls --json')
   const stdout = JSON.parse(info.stdout)
-  const pkg = stdout.map((_: Record<string, any>) => {
-    return {
-      ..._,
-      value: _.name
-    }
-  })
+  const pkg = stdout
+    .filter((_: Record<string, any>) => (noPrivate ? !_.private : true))
+    .map((_: Record<string, any>) => {
+      return {
+        ..._,
+        value: _.name
+      }
+    })
 
   return {
     detail: pkg,
@@ -71,7 +73,7 @@ const getPackageDependencies = async (
   tsort?: [string, string][]
 ) => {
   if (!list) {
-    const repositoryPackages = await getRepositoryPackages()
+    const repositoryPackages = await getRepositoryPackages(true)
     list = repositoryPackages.detail
   }
 
@@ -99,7 +101,11 @@ const getPackageDependencies = async (
     }
   }
 
-  return toposort(tsort).reverse()
+  if (tsort.length) {
+    return toposort(tsort).reverse().slice(0, -1)
+  }
+
+  return []
 }
 
 export {

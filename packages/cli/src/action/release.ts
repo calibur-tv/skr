@@ -6,7 +6,7 @@ import {
 } from '../utils'
 
 export default async () => {
-  const { list } = await getRepositoryPackages()
+  const { list, detail } = await getRepositoryPackages(true)
   const { name } = await inquirer.prompt({
     type: 'list',
     name: 'name',
@@ -18,9 +18,15 @@ export default async () => {
   const command = [
     'prepatch',
     '--preid beta',
-    `--force-publish=${name},${dependencies.join(',')}`,
+    '--exact',
+    `--force-publish=${dependencies.join(',')}`,
     '--yes'
   ]
   await execCommand(`lerna version ${command.join(' ')}`)
-  await execCommand('lerna publish from-git --dist-tag beta --yes')
+  for (let i = 0; i < dependencies.length; i++) {
+    const item = detail.find(
+      (_: Record<string, string>) => _.name === dependencies[i]
+    )
+    await execCommand(`lerna exec -- cd ${item.location} && npm publish`)
+  }
 }
