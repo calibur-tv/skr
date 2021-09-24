@@ -23,7 +23,7 @@ skr
   .option('-P', '添加包到 peerDependencies')
   .action(add)
 
-skr.command('release', '收集项目依赖').action(release)
+skr.command('release', '发布新版本').action(release)
 
 skr.version(version)
 
