@@ -54,7 +54,9 @@ const getPkgJson = async (name: string): Promise<Record<string, any>> => {
   if (!pkg) {
     // TODO
   }
-  return JSON.parse(fs.readFileSync(`${pkg.location}/package.json`, 'utf-8'))
+  return JSON.parse(
+    await fs.promises.readFile(`${pkg.location}/package.json`, 'utf-8')
+  )
 }
 
 const updatePackageJson = async (name: string, value: string): Promise<any> => {
@@ -63,8 +65,10 @@ const updatePackageJson = async (name: string, value: string): Promise<any> => {
   if (!pkg) {
     // TODO
   }
-  // @ts-ignore
-  fs.writeFileSync(`${pkg.location}/package.json`, JSON.stringify(value, '', 2))
+  await fs.promises.writeFile(
+    `${pkg.location}/package.json`,
+    JSON.stringify(value, null, 2)
+  )
 }
 
 const getPackageDependencies = async (

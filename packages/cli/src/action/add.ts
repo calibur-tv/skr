@@ -14,9 +14,9 @@ export default async (
   })
 
   let script = `lerna add ${packageName} --scope=${name}`
-  if (options.D || options.dev) {
+  if (options.dev) {
     script += ' --dev'
-  } else if (options.D || options.peer) {
+  } else if (options.peer) {
     script += ' --peer'
   }
 

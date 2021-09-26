@@ -10,7 +10,6 @@ export default async () => {
 
   await fs.promises.writeFile(
     path.resolve('./package.json'),
-    // @ts-ignore
-    JSON.stringify(pkg, '', 2)
+    JSON.stringify(pkg, null, 2)
   )
 }
