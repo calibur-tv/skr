@@ -2,6 +2,7 @@
 import cac from 'cac'
 import { version } from '../package.json'
 import release from './action/release'
+import deploy from './action/deploy'
 import init from './action/init'
 import boot from './action/boot'
 import run from './action/run'
@@ -24,6 +25,8 @@ skr
   .action(add)
 
 skr.command('release', '发布新版本').action(release)
+
+skr.command('deploy', '部署脚本').action(deploy)
 
 skr.version(version)
 
