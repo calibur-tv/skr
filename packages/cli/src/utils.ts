@@ -3,20 +3,7 @@ import { spawn, exec } from 'child-process-promise'
 import toposort from 'toposort'
 
 const execCommand = (action: string, log = true): Promise<any> => {
-  action = action.trim()
-  const speicalCase =
-    action.split('').filter((_) => _ === "'").length === 2 &&
-    action.endsWith("'")
-  let tmp: string[] = []
-  if (speicalCase) {
-    tmp = action.split("'").filter((_) => _)
-    action = tmp[0].trim()
-  }
-  const arr: string[] = action.split(' ')
-  if (speicalCase) {
-    arr.push(tmp[1])
-  }
-  console.log(arr)
+  const arr: string[] = action.trim().split(' ')
   const promise = spawn(arr.shift() as string, arr)
   const childProcess = promise.childProcess
 

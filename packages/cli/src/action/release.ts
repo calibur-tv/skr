@@ -1,5 +1,4 @@
 import inquirer from 'inquirer'
-import { exec } from 'child-process-promise'
 import {
   getRepositoryPackages,
   getPackageDependencies,
@@ -28,6 +27,6 @@ export default async () => {
     const item = detail.find(
       (_: Record<string, string>) => _.name === dependencies[i]
     )
-    await exec(`'cd ${item.location} && npm publish'`)
+    await execCommand(`npm publish ${item.location}`)
   }
 }
