@@ -3,7 +3,20 @@ import { spawn, exec } from 'child-process-promise'
 import toposort from 'toposort'
 
 const execCommand = (action: string, log = true): Promise<any> => {
+  action = action.trim()
+  const speicalCase =
+    action.split('').filter((_) => _ === "'").length === 2 &&
+    action.endsWith("'")
+  let tmp: string[] = []
+  if (speicalCase) {
+    tmp = action.split("'").filter((_) => _)
+    action = tmp[0].trim()
+  }
   const arr: string[] = action.split(' ')
+  if (speicalCase) {
+    arr.push(tmp[1])
+  }
+  console.log(arr)
   const promise = spawn(arr.shift() as string, arr)
   const childProcess = promise.childProcess
 
@@ -101,11 +114,7 @@ const getPackageDependencies = async (
     }
   }
 
-  if (tsort.length) {
-    return toposort(tsort).reverse().slice(0, -1)
-  }
-
-  return []
+  return toposort(tsort).reverse()
 }
 
 export {

@@ -1,4 +1,5 @@
 import inquirer from 'inquirer'
+import { exec } from 'child-process-promise'
 import {
   getRepositoryPackages,
   getPackageDependencies,
@@ -27,6 +28,6 @@ export default async () => {
     const item = detail.find(
       (_: Record<string, string>) => _.name === dependencies[i]
     )
-    await execCommand(`lerna exec -- cd ${item.location} && npm publish`)
+    await exec(`'cd ${item.location} && npm publish'`)
   }
 }
