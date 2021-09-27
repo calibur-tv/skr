@@ -1,6 +1,9 @@
 import fs from 'fs'
+import path from 'path'
 import { spawn, exec } from 'child-process-promise'
 import toposort from 'toposort'
+import urllib from 'urllib'
+import compressing from 'compressing'
 
 const execCommand = (action: string, log = true): Promise<any> => {
   const arr: string[] = action.trim().split(' ')
@@ -41,11 +44,28 @@ const getRepositoryPackages = async (noPrivate = false) => {
 }
 
 const getRemotePackageInfo = async (name: string) => {
-  const stat = await exec(`npm view ${name} dist.tarball`)
-  return {
-    release: stat?.stdout?.split('-')?.pop()?.replace('.tgz', '').trim(),
-    download: stat?.stdout
+  const { stdout } = await exec(`npm view ${name} dist.tarball`)
+  const root = path.resolve(__dirname, '.cache')
+
+  const result = {
+    release: stdout?.split('-')?.pop()?.replace('.tgz', '').trim() || '',
+    download: stdout,
+    filepath: ''
   }
+
+  const filepath = path.resolve(root, name, result.release)
+  if (!fs.existsSync(filepath)) {
+    const rest = await urllib.request(result.download, {
+      streaming: true,
+      followRedirect: true
+    })
+
+    await compressing.tgz.uncompress(rest.res as any, filepath)
+  }
+
+  result.filepath = filepath + '/package'
+
+  return result
 }
 
 const getPkgJson = async (name: string): Promise<Record<string, any>> => {
