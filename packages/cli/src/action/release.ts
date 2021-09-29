@@ -14,15 +14,53 @@ export default async () => {
     choices: list
   })
 
+  const { name2 } = await inquirer.prompt({
+    type: 'list',
+    name: 'name2',
+    message: 'message',
+    choices: [
+      {
+        name: 'major',
+        value: 'major'
+      },
+      {
+        name: 'minor',
+        value: 'minor'
+      },
+      {
+        name: 'patch',
+        value: 'patch'
+      },
+      {
+        name: 'premajor',
+        value: 'premajor'
+      },
+      {
+        name: 'preminor',
+        value: 'preminor'
+      },
+      {
+        name: 'prepatch',
+        value: 'prepatch'
+      },
+      {
+        name: 'prerelease',
+        value: 'prerelease'
+      }
+    ]
+  })
+
   const dependencies = await getPackageDependencies(name)
+
   const command = [
-    'prepatch',
-    '--preid beta',
+    name2,
+    /pre/.test(name2) ? '--preid beta' : '',
     '--exact',
+    '--no-private',
     `--force-publish=${dependencies.join(',')}`,
     '--yes'
   ]
-  await execCommand(`lerna version ${command.join(' ')}`)
+  await execCommand(`lerna version ${command.filter((_) => _).join(' ')}`)
   for (let i = 0; i < dependencies.length; i++) {
     const item = detail.find(
       (_: Record<string, string>) => _.name === dependencies[i]
