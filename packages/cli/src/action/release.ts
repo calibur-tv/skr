@@ -5,56 +5,64 @@ import {
   execCommand
 } from '../utils'
 
-export default async () => {
+export default async (name: string, version: string) => {
   const { list, detail } = await getRepositoryPackages(true)
-  const { name } = await inquirer.prompt({
-    type: 'list',
-    name: 'name',
-    message: 'message',
-    choices: list
-  })
+  if (!name) {
+    const question1 = await inquirer.prompt({
+      type: 'list',
+      name: 'name',
+      message: 'message',
+      choices: list
+    })
 
-  const { name2 } = await inquirer.prompt({
-    type: 'list',
-    name: 'name2',
-    message: 'message',
-    choices: [
-      {
-        name: 'major',
-        value: 'major'
-      },
-      {
-        name: 'minor',
-        value: 'minor'
-      },
-      {
-        name: 'patch',
-        value: 'patch'
-      },
-      {
-        name: 'premajor',
-        value: 'premajor'
-      },
-      {
-        name: 'preminor',
-        value: 'preminor'
-      },
-      {
-        name: 'prepatch',
-        value: 'prepatch'
-      },
-      {
-        name: 'prerelease',
-        value: 'prerelease'
-      }
-    ]
-  })
+    name = question1.name
+  }
+
+  if (!version) {
+    const question2 = await inquirer.prompt({
+      type: 'list',
+      name: 'version',
+      message: 'message',
+      choices: [
+        {
+          name: 'major',
+          value: 'major'
+        },
+        {
+          name: 'minor',
+          value: 'minor'
+        },
+        {
+          name: 'patch',
+          value: 'patch'
+        },
+        {
+          name: 'premajor',
+          value: 'premajor'
+        },
+        {
+          name: 'preminor',
+          value: 'preminor'
+        },
+        {
+          name: 'prepatch',
+          value: 'prepatch'
+        },
+        {
+          name: 'prerelease',
+          value: 'prerelease'
+        }
+      ]
+    })
+
+    version = question2.version
+  }
 
   const dependencies = await getPackageDependencies(name)
 
   const command = [
-    name2,
-    /pre/.test(name2) ? '--preid beta' : '',
+    version,
+    /pre/.test(version) ? '--preid beta' : '',
     '--exact',
     '--no-private',
     `--force-publish=${dependencies.join(',')}`,

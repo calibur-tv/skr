@@ -2,7 +2,7 @@ import inquirer from 'inquirer'
 import { getRepositoryPackages, execCommand } from '../utils'
 
 export default async (
-  packageName: string,
+  names: string[],
   options: Record<string, any>
 ): Promise<any> => {
   const { list } = await getRepositoryPackages()
@@ -13,12 +13,18 @@ export default async (
     choices: list
   })
 
-  let script = `lerna add ${packageName} --scope=${name}`
-  if (options.dev) {
-    script += ' --dev'
-  } else if (options.peer) {
-    script += ' --peer'
-  }
+  for (let i = 0; i < names.length; i++) {
+    let script = `lerna add ${names[i]} --scope=${name}`
+    if (options.dev) {
+      script += ' --dev'
+    } else if (options.peer) {
+      script += ' --peer'
+    }
 
-  await execCommand(script)
+    if (options.exact) {
+      script += ' --exact'
+    }
+
+    await execCommand(script)
+  }
 }
