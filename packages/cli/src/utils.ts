@@ -4,6 +4,7 @@ import { spawn, exec } from 'child-process-promise'
 import toposort from 'toposort'
 import urllib from 'urllib'
 import compressing from 'compressing'
+import { AutoComplete } from 'enquirer'
 
 const execCommand = (action: string, log = true): Promise<any> => {
   const arr: string[] = action.trim().split(' ')
@@ -33,6 +34,7 @@ const getRepositoryPackages = async (noPrivate = false) => {
     .map((_: Record<string, any>) => {
       return {
         ..._,
+        title: _.name,
         value: _.name
       }
     })
@@ -91,41 +93,72 @@ const updatePackageJson = async (name: string, value: string): Promise<any> => {
   )
 }
 
-const getPackageDependencies = async (
-  packageName: string,
-  list?: Record<string, any>[],
-  tsort?: [string, string][]
-) => {
-  if (!list) {
-    const repositoryPackages = await getRepositoryPackages(true)
-    list = repositoryPackages.detail
-  }
+const getPackageDependencies = async (packageName: string, withSelf = true) => {
+  const { detail } = await getRepositoryPackages(true)
+  const sort: [string, string][] = []
 
-  if (!tsort) {
-    tsort = []
-  }
-
-  const core = async (
+  const outer = async (
     name: string,
-    list: Record<string, any>[]
-  ): Promise<string[]> => {
-    const json = await getPkgJson(name)
-    const dependencies = Object.keys(json?.dependencies || {})
-    return list.filter((_) => dependencies.includes(_.name)).map((_) => _.name)
-  }
-
-  const dependencies = await core(packageName, list as Record<string, any>[])
-  if (dependencies.length) {
-    dependencies.forEach((dependencyName: string) => {
-      ;(tsort as [string, string][]).push([packageName, dependencyName])
-    })
-
-    for (let i = 0; i < dependencies.length; i++) {
-      await getPackageDependencies(dependencies[i], list, tsort)
+    list: Record<string, any>[],
+    tSort: [string, string][]
+  ) => {
+    const inner = async (
+      name: string,
+      list: Record<string, any>[]
+    ): Promise<string[]> => {
+      const json = await getPkgJson(name)
+      const dependencies = Object.keys(json?.dependencies || {})
+      return list
+        .filter((_) => dependencies.includes(_.name))
+        .map((_) => _.name)
     }
+
+    const dependencies = await inner(name, list as Record<string, any>[])
+    if (dependencies.length) {
+      dependencies.forEach((dependencyName: string) => {
+        tSort.push([name, dependencyName])
+      })
+
+      for (let i = 0; i < dependencies.length; i++) {
+        await outer(dependencies[i], list, tSort)
+      }
+    }
+
+    return toposort(tSort).reverse()
   }
 
-  return toposort(tsort).reverse()
+  let result: string[] = await outer(packageName, detail, sort)
+  if (withSelf) {
+    result.push(packageName)
+  } else {
+    result = result.filter((_) => _ !== packageName)
+  }
+
+  return [...new Set(result)]
+}
+
+const promptWithDefault = async (opts: {
+  name?: string
+  choices: any[]
+  default?: string
+  message?: string
+}) => {
+  if (opts.default) {
+    return opts.default
+  }
+
+  const { name = 'name', message = 'message', choices = [] } = opts
+
+  try {
+    const prompt = new AutoComplete({
+      name,
+      message,
+      choices
+    })
+    return await prompt.run()
+  } catch (e) {
+    process.exit()
+  }
 }
 
 export {
@@ -133,5 +166,6 @@ export {
   getRepositoryPackages,
   getPackageDependencies,
   updatePackageJson,
+  promptWithDefault,
   getRemotePackageInfo
 }

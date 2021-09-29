@@ -35,7 +35,10 @@ skr
   .option('--exact, -E', '锁死版本')
   .action(add)
 
-skr.command('release [name] [version]', '发布新版本').action(release)
+skr
+  .command('release [name] [version]', '发布新版本')
+  .option('--self, -S', '更新自己的版本')
+  .action(release)
 
 skr.command('deploy', '部署脚本').action(deploy)
 

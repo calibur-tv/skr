@@ -1,21 +1,15 @@
-import inquirer from 'inquirer'
 import {
   getRepositoryPackages,
   getPackageDependencies,
-  execCommand
+  execCommand,
+  promptWithDefault
 } from '../utils'
 
 export default async (packageName: string, options: Record<string, any>) => {
   const { list, detail } = await getRepositoryPackages()
-  if (!packageName) {
-    const { name } = await inquirer.prompt({
-      type: 'list',
-      name: 'name',
-      message: 'message',
-      choices: list
-    })
-    packageName = name
-  }
+  packageName = await promptWithDefault({
+    choices: list
+  })
 
   if (options.clean) {
     await execCommand('lerna clean --yes')
@@ -26,6 +20,6 @@ export default async (packageName: string, options: Record<string, any>) => {
     const item = detail.find(
       (_: Record<string, string>) => _.name === dependencies[i]
     )
-    await execCommand(`npm run --prefix ${item.location} build`)
+    await execCommand(`yarn --cwd ${item.location} build`)
   }
 }

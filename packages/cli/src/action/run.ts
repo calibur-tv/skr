@@ -1,12 +1,8 @@
-import inquirer from 'inquirer'
-import { getRepositoryPackages, execCommand } from '../utils'
+import { getRepositoryPackages, execCommand, promptWithDefault } from '../utils'
 
 export default async (script: string): Promise<any> => {
   const { list } = await getRepositoryPackages()
-  const { name } = await inquirer.prompt({
-    type: 'list',
-    name: 'name',
-    message: 'message',
+  const name = await promptWithDefault({
     choices: list
   })
 
