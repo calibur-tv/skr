@@ -17,7 +17,7 @@ skr.command('init', '初始化脚手架').action(init)
 skr.command('create', '创建项目').action(create)
 
 skr
-  .command('template <name> <url>', '添加模板')
+  .command('template <name> [...url]', '添加模板')
   .option('--remove, -R', '删除模板')
   .action(template)
 

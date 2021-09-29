@@ -14,17 +14,17 @@
     "cac": "^6.7.3",
     "change-case": "^4.1.2",
     "child-process-promise": "^2.2.1",
-    "compressing": "^1.5.1",
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
     "inquirer": "^8.1.5",
     "toposort": "^2.0.2",
-    "urllib": "^2.37.3"
+    "urllib": "^2.37.4"
   },
   "devDependencies": {
     "@types/child-process-promise": "^2.2.2",
     "@types/inquirer": "^8.1.2",
     "@types/toposort": "^2.0.3",
+    "compressing": "^1.5.1",
     "tsup": "^4.14.0"
   }
 }

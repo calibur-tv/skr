@@ -1,9 +1,13 @@
+import { getRemotePackageInfo } from '../utils'
+
 export default async (
   name: string,
-  url: string,
-  options: Record<string, any>
+  urls: string[],
+  opts: Record<string, any>
 ) => {
   console.log(name)
-  console.log(url)
-  console.log(options)
+  console.log(urls)
+  console.log(opts)
+  const { filepath } = await getRemotePackageInfo('@calibur/mfe-loader')
+  console.log(filepath)
 }
