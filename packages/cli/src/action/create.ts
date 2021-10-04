@@ -1,3 +1,4 @@
+import path from 'path'
 import { promptWithDefault, getRemotePackageInfo } from '../utils'
 import configManager from '../manager/config'
 import writeTemplate from '../utils/template'
@@ -20,10 +21,14 @@ export default async (name: string, opts: Record<string, any>) => {
     console.log('输入的 template 错误')
     return
   }
-  const packages = await Promise.all(
+  const packages: Record<string, any>[] = await Promise.all(
     templateInfo.urls.map((pkgName: string) => getRemotePackageInfo(pkgName))
   )
-  packages.forEach((pkg: Record<string, any>) => {
-    writeTemplate(pkg.filepath, './test')
-  })
+  for (const pkg of packages) {
+    await writeTemplate(
+      pkg.filepath,
+      path.join(opts.dest, name),
+      pkg.packageJson
+    )
+  }
 }

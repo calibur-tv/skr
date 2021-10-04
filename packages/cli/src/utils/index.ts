@@ -45,14 +45,19 @@ const getRepositoryPackages = async (noPrivate = false) => {
   }
 }
 
-const getRemotePackageInfo = async (name: string) => {
+const getRemotePackageInfo = async (name: string, download = true) => {
   const { stdout } = await exec(`npm view ${name} dist.tarball`)
   const root = path.resolve(__dirname, '.cache')
 
   const result = {
+    name,
     version: stdout?.split('-')?.pop()?.replace('.tgz', '').trim() || '',
     filepath: '',
     packageJson: {}
+  }
+
+  if (!download) {
+    return result
   }
 
   const filepath = path.resolve(root, name, result.version)
