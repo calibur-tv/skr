@@ -12,5 +12,6 @@ export default async () => {
   } catch (e) {
     await execCommand('npm install yarn -g')
   }
+  // TODO，write default template
   console.log('skr init success！')
 }

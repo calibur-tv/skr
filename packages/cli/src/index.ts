@@ -14,11 +14,16 @@ const skr = cac('skr')
 
 skr.command('init', '初始化脚手架').action(init)
 
-skr.command('create [template] [name]', '创建项目').action(create)
+skr
+  .command('create <name>', '创建项目')
+  .option('--template [template]', '模板名称')
+  .option('--dest [dest]', '输出目录')
+  .action(create)
 
 skr
   .command('template <name> [...url]', '添加模板')
   .option('--remove, -R', '删除模板')
+  .option('--desc [desc]', '模板描述')
   .action(template)
 
 skr

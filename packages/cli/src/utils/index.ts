@@ -50,14 +50,14 @@ const getRemotePackageInfo = async (name: string) => {
   const root = path.resolve(__dirname, '.cache')
 
   const result = {
-    release: stdout?.split('-')?.pop()?.replace('.tgz', '').trim() || '',
-    download: stdout,
-    filepath: ''
+    version: stdout?.split('-')?.pop()?.replace('.tgz', '').trim() || '',
+    filepath: '',
+    packageJson: {}
   }
 
-  const filepath = path.resolve(root, name, result.release)
+  const filepath = path.resolve(root, name, result.version)
   if (!fs.existsSync(filepath)) {
-    const rest = await urllib.request(result.download, {
+    const rest = await urllib.request(stdout, {
       streaming: true,
       followRedirect: true
     })
@@ -66,6 +66,12 @@ const getRemotePackageInfo = async (name: string) => {
   }
 
   result.filepath = filepath + '/package'
+  result.packageJson = JSON.parse(
+    await fs.promises.readFile(
+      path.resolve(result.filepath, 'package.json'),
+      'utf-8'
+    )
+  )
 
   return result
 }
