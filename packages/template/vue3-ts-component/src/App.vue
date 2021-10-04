@@ -1,8 +1,6 @@
-<template>
-  <<%= name.paramCase %> :msg="hello <%= name.pascalCase %>" />
-</template>
+<template><<%= name.paramCase %> msg="hello <%= name.pascalCase %>" /></template>
 
-<script lang="ts">
+<script setup lang="ts">
 import <%= name.pascalCase %> from './components/index.vue'
 </script>
 

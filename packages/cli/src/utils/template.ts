@@ -62,7 +62,7 @@ const writeTemplate = async (
       ...configData
     }
   }
-  console.log(config)
+
   for (const filename of files.filter(
     (_: string) => _ !== TEMPLATE_CONF_FILE
   )) {
