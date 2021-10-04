@@ -1,8 +1,8 @@
 import path from 'path'
-import changeCase from 'change-case'
+import { pascalCase, paramCase, camelCase } from 'change-case'
 import { promptWithDefault, getRemotePackageInfo } from '../utils'
 import configManager from '../manager/config'
-import writeTemplate from '../utils/template'
+import { writeTemplate } from '../utils/template'
 
 export default async (name: string, opts: Record<string, any>) => {
   const config = configManager.get()
@@ -26,11 +26,11 @@ export default async (name: string, opts: Record<string, any>) => {
     templateInfo.urls.map((pkgName: string) => getRemotePackageInfo(pkgName))
   )
   for (const pkg of packages) {
-    await writeTemplate(pkg.filepath, path.join(opts.dest, name), {
+    await writeTemplate(pkg.filepath, path.join(opts.dest || '', name), {
       name: {
-        pascalCase: changeCase.pascalCase(name),
-        paramCase: changeCase.paramCase(name),
-        camelCase: changeCase.camelCase(name)
+        pascalCase: pascalCase(name),
+        paramCase: paramCase(name),
+        camelCase: camelCase(name)
       }
     })
   }

@@ -1,15 +1,18 @@
 import fs from 'fs'
 import path from 'path'
 import ejs from 'ejs'
-import { getRemotePackageInfo } from './index'
+import { ejsRegex, getRemotePackageInfo } from './index'
 
-// https://github.com/mde/ejs/blob/main/lib/ejs.js#L60
-const _REGEX_STRING = '(<%%|%%>|<%=|<%-|<%_|<%#|<%|%>|-%>|_%>)'
-const regex = new RegExp(_REGEX_STRING)
 const TEMPLATE_CONF_FILE = '.template.js'
 const TEMPLATE_INFO_FILE = 'package.json'
 
-const write = async (
+const escapeEjsKey = (key: string): string =>
+  key.replace(/@/g, '_1_').replace(/\//g, '_2_').replace(/-/g, '_3_')
+
+const unescpaeEjsKey = (key: string): string =>
+  key.replace(/_1_/g, '@').replace(/_2_/g, '/').replace(/_3_/g, '-')
+
+const writeTemplate = async (
   input: string,
   output: string,
   opts: Record<string, any> = {}
@@ -30,16 +33,18 @@ const write = async (
     const needCheck = []
     for (const name in dependencies) {
       const versionName = dependencies[name]
-      if (regex.test(versionName)) {
-        needCheck.push(versionName.split(regex)[2].trim())
+      if (ejsRegex.test(versionName)) {
+        needCheck.push(versionName.split(ejsRegex)[2].trim())
       }
     }
 
     const versionArr = await Promise.all(
-      needCheck.map((_: string) => getRemotePackageInfo(_, false))
+      needCheck.map((_: string) =>
+        getRemotePackageInfo(unescpaeEjsKey(_), false)
+      )
     )
     versionArr.forEach((item: any) => {
-      versionMap[item.name] = item.version
+      versionMap[escapeEjsKey(item.name)] = item.version
     })
   }
 
@@ -57,7 +62,7 @@ const write = async (
       ...configData
     }
   }
-
+  console.log(config)
   for (const filename of files.filter(
     (_: string) => _ !== TEMPLATE_CONF_FILE
   )) {
@@ -93,4 +98,4 @@ const copyDir = (
   }
 }
 
-export default write
+export { writeTemplate, escapeEjsKey, unescpaeEjsKey }

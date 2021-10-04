@@ -6,6 +6,10 @@ import urllib from 'urllib'
 import fsExtra from 'fs-extra'
 import compressing from 'compressing'
 import { AutoComplete } from 'enquirer'
+import { escapeEjsKey } from './template'
+
+// https://github.com/mde/ejs/blob/main/lib/ejs.js#L60
+const ejsRegex = new RegExp('(<%%|%%>|<%=|<%-|<%_|<%#|<%|%>|-%>|_%>)')
 
 const execCommand = (action: string, log = true): Promise<any> => {
   const arr: string[] = action.trim().split(' ')
@@ -59,8 +63,7 @@ const getRemotePackageInfo = async (
   const result = {
     name,
     version: stdout?.split('-')?.pop()?.replace('.tgz', '').trim() || '',
-    filepath: '',
-    packageJson: {}
+    filepath: ''
   }
 
   if (!download) {
@@ -78,12 +81,25 @@ const getRemotePackageInfo = async (
   }
 
   result.filepath = path.join(filepath, 'package', subpath)
-  result.packageJson = JSON.parse(
-    await fs.promises.readFile(
-      path.resolve(result.filepath, 'package.json'),
-      'utf-8'
-    )
-  )
+  const packagePath = path.resolve(result.filepath, 'package.json')
+  let packageStrs = await fs.promises.readFile(packagePath, 'utf-8')
+  const packageJson = JSON.parse(packageStrs)
+  const dependencies = {
+    ...packageJson.dependencies,
+    ...packageJson.devDependencies,
+    ...packageJson.peerDependencies
+  }
+  for (const name in dependencies) {
+    const versionName = dependencies[name]
+    if (ejsRegex.test(versionName)) {
+      packageStrs = packageStrs.replace(
+        new RegExp(versionName, 'g'),
+        escapeEjsKey(versionName)
+      )
+    }
+  }
+
+  await fs.promises.writeFile(packagePath, packageStrs)
 
   return result
 }
@@ -180,6 +196,7 @@ const promptWithDefault = async (opts: {
 }
 
 export {
+  ejsRegex,
   execCommand,
   getRepositoryPackages,
   getPackageDependencies,
