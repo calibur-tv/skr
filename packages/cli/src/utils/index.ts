@@ -57,12 +57,13 @@ const getRemotePackageInfo = async (
   const arr = nameWithSubpath.split('#')
   const name = arr[0]
   const subpath = arr[1] || ''
-  const { stdout } = await exec(`npm view ${name} dist.tarball`)
+  const tarball = await exec(`npm view ${name} dist.tarball`)
+  const version = await exec(`npm view ${name} version`)
   const root = path.resolve(__dirname, '.cache')
 
   const result = {
     name,
-    version: stdout?.split('-')?.pop()?.replace('.tgz', '').trim() || '',
+    version: version.stdout.trim(),
     filepath: ''
   }
 
@@ -71,9 +72,10 @@ const getRemotePackageInfo = async (
   }
 
   const filepath = path.resolve(root, name, result.version)
-  if (!fs.existsSync(filepath)) {
+  const needDownload = !fs.existsSync(filepath)
+  if (needDownload) {
     fsExtra.emptyDirSync(path.resolve(root, name))
-    const rest = await urllib.request(stdout, {
+    const rest = await urllib.request(tarball.stdout, {
       streaming: true,
       followRedirect: true
     })
@@ -81,25 +83,26 @@ const getRemotePackageInfo = async (
   }
 
   result.filepath = path.join(filepath, 'package', subpath)
-  const packagePath = path.resolve(result.filepath, 'package.json')
-  let packageStrs = await fs.promises.readFile(packagePath, 'utf-8')
-  const packageJson = JSON.parse(packageStrs)
-  const dependencies = {
-    ...packageJson.dependencies,
-    ...packageJson.devDependencies,
-    ...packageJson.peerDependencies
-  }
-  for (const name in dependencies) {
-    const versionName = dependencies[name]
-    if (ejsRegex.test(versionName)) {
-      packageStrs = packageStrs.replace(
-        new RegExp(versionName, 'g'),
-        escapeEjsKey(versionName)
-      )
+  if (needDownload) {
+    const packagePath = path.resolve(result.filepath, 'package.json')
+    let packageStrs = await fs.promises.readFile(packagePath, 'utf-8')
+    const packageJson = JSON.parse(packageStrs)
+    const dependencies = {
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
+      ...packageJson.peerDependencies
     }
+    for (const name in dependencies) {
+      const versionName = dependencies[name]
+      if (ejsRegex.test(versionName)) {
+        packageStrs = packageStrs.replace(
+          versionName,
+          escapeEjsKey(versionName)
+        )
+      }
+    }
+    await fs.promises.writeFile(packagePath, packageStrs)
   }
-
-  await fs.promises.writeFile(packagePath, packageStrs)
 
   return result
 }
