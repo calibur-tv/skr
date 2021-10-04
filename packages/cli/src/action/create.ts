@@ -1,4 +1,5 @@
 import path from 'path'
+import changeCase from 'change-case'
 import { promptWithDefault, getRemotePackageInfo } from '../utils'
 import configManager from '../manager/config'
 import writeTemplate from '../utils/template'
@@ -25,10 +26,12 @@ export default async (name: string, opts: Record<string, any>) => {
     templateInfo.urls.map((pkgName: string) => getRemotePackageInfo(pkgName))
   )
   for (const pkg of packages) {
-    await writeTemplate(
-      pkg.filepath,
-      path.join(opts.dest, name),
-      pkg.packageJson
-    )
+    await writeTemplate(pkg.filepath, path.join(opts.dest, name), {
+      name: {
+        pascalCase: changeCase.pascalCase(name),
+        paramCase: changeCase.paramCase(name),
+        camelCase: changeCase.camelCase(name)
+      }
+    })
   }
 }

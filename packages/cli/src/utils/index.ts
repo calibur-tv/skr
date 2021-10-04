@@ -3,6 +3,7 @@ import path from 'path'
 import { spawn, exec } from 'child-process-promise'
 import toposort from 'toposort'
 import urllib from 'urllib'
+import fsExtra from 'fs-extra'
 import compressing from 'compressing'
 import { AutoComplete } from 'enquirer'
 
@@ -45,7 +46,13 @@ const getRepositoryPackages = async (noPrivate = false) => {
   }
 }
 
-const getRemotePackageInfo = async (name: string, download = true) => {
+const getRemotePackageInfo = async (
+  nameWithSubpath: string,
+  download = true
+) => {
+  const arr = nameWithSubpath.split('#')
+  const name = arr[0]
+  const subpath = arr[1] || ''
   const { stdout } = await exec(`npm view ${name} dist.tarball`)
   const root = path.resolve(__dirname, '.cache')
 
@@ -62,15 +69,15 @@ const getRemotePackageInfo = async (name: string, download = true) => {
 
   const filepath = path.resolve(root, name, result.version)
   if (!fs.existsSync(filepath)) {
+    fsExtra.emptyDirSync(path.resolve(root, name))
     const rest = await urllib.request(stdout, {
       streaming: true,
       followRedirect: true
     })
-
     await compressing.tgz.uncompress(rest.res as any, filepath)
   }
 
-  result.filepath = filepath + '/package'
+  result.filepath = path.join(filepath, 'package', subpath)
   result.packageJson = JSON.parse(
     await fs.promises.readFile(
       path.resolve(result.filepath, 'package.json'),

@@ -5,3 +5,4 @@ dist
 *.tsbuildinfo
 *.local
 *.log
+packages/template/*

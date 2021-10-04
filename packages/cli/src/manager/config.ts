@@ -1,25 +1,15 @@
 import path from 'path'
 import os from 'os'
 import fs from 'fs'
-import defu from 'defu'
 import { name } from '../../package.json'
 
 const ROOT_NAME = '.' + name.split('/').pop()
 const FILE_NAME = 'conf.json'
 
-const set = (data: Record<string, any>) => {
-  const config = get()
-  const filepath = path.resolve(os.homedir(), ROOT_NAME, FILE_NAME)
+const set = (newConfig: Record<string, any>) => {
   fs.writeFileSync(
-    filepath,
-    JSON.stringify(
-      defu({
-        ...data,
-        ...config
-      }),
-      null,
-      2
-    )
+    path.resolve(os.homedir(), ROOT_NAME, FILE_NAME),
+    JSON.stringify(newConfig, null, 2)
   )
 }
 

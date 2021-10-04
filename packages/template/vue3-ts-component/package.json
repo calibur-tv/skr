@@ -1,0 +1,23 @@
+{
+  "name": "<%= name.paramCase %>",
+  "private": true,
+  "version": "0.0.0",
+  "main": "dist/<%= name.paramCase %>.umd.js",
+  "module": "dist/<%= name.paramCase %>.es.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^<%= vue@next %>"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^<%= @vitejs/plugin-vue %>",
+    "@vue/compiler-sfc": "^<%= vue@next %>",
+    "@vue/server-renderer": "^<%= vue@next %>",
+    "typescript": "^4.4.3",
+    "vite": "^<%= vite %>",
+    "vue-tsc": "^<%= vue-tsc %>"
+  }
+}

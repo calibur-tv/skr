@@ -14,15 +14,17 @@
     "cac": "^6.7.3",
     "change-case": "^4.1.2",
     "child-process-promise": "^2.2.1",
-    "defu": "^5.0.0",
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
+    "fs-extra": "^10.0.0",
     "toposort": "^2.0.2",
     "urllib": "^2.37.4"
   },
   "devDependencies": {
+    "@types/change-case": "^2.3.1",
     "@types/child-process-promise": "^2.2.2",
     "@types/ejs": "^3.1.0",
+    "@types/fs-extra": "^9.0.13",
     "@types/toposort": "^2.0.3",
     "compressing": "^1.5.1",
     "tsup": "^4.14.0"
