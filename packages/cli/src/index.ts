@@ -22,8 +22,9 @@ skr
   .action(create)
 
 skr
-  .command('template <name> [...url]', '添加模板')
+  .command('template [name] [...url]', '添加模板')
   .option('--remove, -R', '删除模板')
+  .option('--list, -L', '模板列表')
   .option('--desc [desc]', '模板描述')
   .action(template)
 
