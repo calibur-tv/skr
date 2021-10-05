@@ -33,11 +33,13 @@ export default async (name: string, opts: Record<string, any>) => {
   const cwd = process.cwd()
   const dest = path.join(cwd, opts.dest || '', name)
   if (!isEmptyDir(dest)) {
-    const answer = await confirmWithExit(
-      'Target directory is not empty. Remove existing files and continue?'
-    )
-    if (!answer) {
-      return
+    if (!opts.force) {
+      const answer = await confirmWithExit(
+        'Target directory is not empty. Remove existing files and continue?'
+      )
+      if (!answer) {
+        return
+      }
     }
     makeDirEmpty(dest)
   }
