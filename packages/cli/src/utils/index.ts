@@ -52,7 +52,8 @@ const getRepositoryPackages = async (noPrivate = false) => {
 
 const getRemotePackageInfo = async (
   nameWithSubpath: string,
-  download = true
+  download = true,
+  onlyCheck = false
 ) => {
   const arr = nameWithSubpath.split('#')
   const name = arr[0]
@@ -67,10 +68,15 @@ const getRemotePackageInfo = async (
     filepath: path.join(pkgRoot, 'package', subpath)
   }
 
-  if (!download && !fs.existsSync(pkgRoot)) {
+  if (onlyCheck) {
     return result
   }
 
+  if (!download && fs.existsSync(pkgRoot)) {
+    return result
+  }
+
+  console.log(`Downloading ${name}...`)
   fsExtra.emptyDirSync(path.resolve(tmpRoot, name))
   const tarball = (await exec(`npm view ${name} dist.tarball`)).stdout
   const rest = await urllib.request(tarball, {

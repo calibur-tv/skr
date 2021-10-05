@@ -48,7 +48,7 @@ const writeTemplate = async (
 
     const versionArr = await Promise.all(
       needCheck.map((_: string) =>
-        getRemotePackageInfo(unescpaeEjsKey(_), false)
+        getRemotePackageInfo(unescpaeEjsKey(_), false, true)
       )
     )
     versionArr.forEach((item: any) => {

@@ -20,7 +20,7 @@ export default async (name: string, opts: Record<string, any>) => {
   }
 
   const templateName = await promptWithDefault({
-    choices: templates,
+    choices: templates.map((_: Record<string, any>) => _.name),
     default: opts.template
   })
   const templateInfo = templates.find(
