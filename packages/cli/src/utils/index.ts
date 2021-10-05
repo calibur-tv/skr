@@ -5,7 +5,7 @@ import toposort from 'toposort'
 import urllib from 'urllib'
 import fsExtra from 'fs-extra'
 import compressing from 'compressing'
-import { AutoComplete } from 'enquirer'
+import { Confirm, AutoComplete } from 'enquirer'
 import { escapeEjsKey } from './template'
 
 // https://github.com/mde/ejs/blob/main/lib/ejs.js#L60
@@ -57,33 +57,29 @@ const getRemotePackageInfo = async (
   const arr = nameWithSubpath.split('#')
   const name = arr[0]
   const subpath = arr[1] || ''
-  const tarball = await exec(`npm view ${name} dist.tarball`)
-  const version = await exec(`npm view ${name} version`)
-  const root = path.resolve(__dirname, '.cache')
+  const version = (await exec(`npm view ${name} version`)).stdout.trim()
+  const tmpRoot = path.resolve(__dirname, '.cache')
+  const pkgRoot = path.resolve(tmpRoot, name, version)
 
   const result = {
     name,
-    version: version.stdout.trim(),
-    filepath: ''
+    version,
+    filepath: path.join(pkgRoot, 'package', subpath)
   }
 
   if (!download) {
     return result
   }
 
-  const filepath = path.resolve(root, name, result.version)
-  const needDownload = !fs.existsSync(filepath)
-  if (needDownload) {
-    fsExtra.emptyDirSync(path.resolve(root, name))
-    const rest = await urllib.request(tarball.stdout, {
+  if (!fs.existsSync(pkgRoot)) {
+    fsExtra.emptyDirSync(path.resolve(tmpRoot, name))
+    const tarball = (await exec(`npm view ${name} dist.tarball`)).stdout
+    const rest = await urllib.request(tarball, {
       streaming: true,
       followRedirect: true
     })
-    await compressing.tgz.uncompress(rest.res as any, filepath)
-  }
+    await compressing.tgz.uncompress(rest.res as any, pkgRoot)
 
-  result.filepath = path.join(filepath, 'package', subpath)
-  if (needDownload) {
     const packagePath = path.resolve(result.filepath, 'package.json')
     let packageStrs = await fs.promises.readFile(packagePath, 'utf-8')
     const packageJson = JSON.parse(packageStrs)
@@ -198,12 +194,44 @@ const promptWithDefault = async (opts: {
   }
 }
 
+const confirmWithExit = async (message: string) => {
+  try {
+    const prompt = new Confirm({ name: 'question', message })
+
+    return await prompt.run()
+  } catch (e) {
+    return false
+  }
+}
+
+const isEmptyDir = (filepath: string): boolean =>
+  !fs.existsSync(filepath) || fs.readdirSync(filepath).length === 0
+
+const makeDirEmpty = (dir: string): void => {
+  if (!fs.existsSync(dir)) {
+    return
+  }
+
+  for (const file of fs.readdirSync(dir)) {
+    const abs = path.resolve(dir, file)
+    if (fs.lstatSync(abs).isDirectory()) {
+      makeDirEmpty(abs)
+      fs.rmdirSync(abs)
+    } else {
+      fs.unlinkSync(abs)
+    }
+  }
+}
+
 export {
   ejsRegex,
+  isEmptyDir,
+  makeDirEmpty,
   execCommand,
   getRepositoryPackages,
   getPackageDependencies,
   updatePackageJson,
   promptWithDefault,
+  confirmWithExit,
   getRemotePackageInfo
 }

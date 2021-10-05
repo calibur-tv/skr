@@ -68,7 +68,7 @@ const writeTemplate = async (
   )) {
     copy(
       path.join(input, filename),
-      path.join(process.cwd(), output, filename.replace('_', '.')),
+      path.join(output, filename.replace('_', '.')),
       config
     )
   }
