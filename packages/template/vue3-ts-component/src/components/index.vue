@@ -1,7 +1,5 @@
 <template>
-  <button class="<%= name.paramCase %>" @click="handler">
-    {{ msg }}
-  </button>
+  <button class="<%= name.paramCase %>" @click="handler">{{ msg }}</button>
 </template>
 
 <script setup lang="ts">
@@ -32,5 +30,5 @@ defineExpose({
 </script>
 
 <style lang="scss">
-@import './style';
+@import "./style";
 </style>

@@ -16,9 +16,11 @@
     "@vitejs/plugin-vue": "^<%= @vitejs/plugin-vue %>",
     "@vue/compiler-sfc": "^<%= vue@next %>",
     "@vue/server-renderer": "^<%= vue@next %>",
+    "normalize.css": "^<%= normalize.css %>",
     "sass": "^<%= sass %>",
     "typescript": "^<%= typescript %>",
     "vite": "^<%= vite %>",
+    "vite-plugin-host": "^<%= vite-plugin-host %>",
     "vue-tsc": "^<%= vue-tsc %>"
   }
 }

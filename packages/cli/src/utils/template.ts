@@ -7,10 +7,18 @@ const TEMPLATE_CONF_FILE = '.template.js'
 const TEMPLATE_INFO_FILE = 'package.json'
 
 const escapeEjsKey = (key: string): string =>
-  key.replace(/@/g, '_1_').replace(/\//g, '_2_').replace(/-/g, '_3_')
+  key
+    .replace(/@/g, '_1A_')
+    .replace(/\//g, '_2B_')
+    .replace(/-/g, '_3C_')
+    .replace(/\./g, '_4D_')
 
 const unescpaeEjsKey = (key: string): string =>
-  key.replace(/_1_/g, '@').replace(/_2_/g, '/').replace(/_3_/g, '-')
+  key
+    .replace(/_1A_/g, '@')
+    .replace(/_2B_/g, '/')
+    .replace(/_3C_/g, '-')
+    .replace(/_4D_/g, '.')
 
 const writeTemplate = async (
   input: string,

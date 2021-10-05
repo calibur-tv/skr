@@ -19,6 +19,7 @@ skr
   .option('--template [template]', '模板名称')
   .option('--dest [dest]', '输出目录')
   .option('--force, -R', '清空目录')
+  .option('--no-cache', '重新下载模板')
   .action(create)
 
 skr

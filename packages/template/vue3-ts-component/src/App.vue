@@ -4,10 +4,8 @@
 import <%= name.pascalCase %> from './components/index.vue'
 </script>
 
-<style>
-body {
-  margin: 0;
-}
+<style lang="scss">
+@import "normalize.css";
 
 #app {
   width: 100vw;

@@ -66,7 +66,9 @@ export default async (name: string, opts: Record<string, any>) => {
   console.log(`\nScaffolding project...`)
 
   const packages: Record<string, any>[] = await Promise.all(
-    templateInfo.urls.map((pkgName: string) => getRemotePackageInfo(pkgName))
+    templateInfo.urls.map((pkgName: string) =>
+      getRemotePackageInfo(pkgName, !!opts.noCache)
+    )
   )
 
   for (const pkg of packages) {

@@ -67,38 +67,33 @@ const getRemotePackageInfo = async (
     filepath: path.join(pkgRoot, 'package', subpath)
   }
 
-  if (!download) {
+  if (!download && !fs.existsSync(pkgRoot)) {
     return result
   }
 
-  if (!fs.existsSync(pkgRoot)) {
-    fsExtra.emptyDirSync(path.resolve(tmpRoot, name))
-    const tarball = (await exec(`npm view ${name} dist.tarball`)).stdout
-    const rest = await urllib.request(tarball, {
-      streaming: true,
-      followRedirect: true
-    })
-    await compressing.tgz.uncompress(rest.res as any, pkgRoot)
+  fsExtra.emptyDirSync(path.resolve(tmpRoot, name))
+  const tarball = (await exec(`npm view ${name} dist.tarball`)).stdout
+  const rest = await urllib.request(tarball, {
+    streaming: true,
+    followRedirect: true
+  })
+  await compressing.tgz.uncompress(rest.res as any, pkgRoot)
 
-    const packagePath = path.resolve(result.filepath, 'package.json')
-    let packageStrs = await fs.promises.readFile(packagePath, 'utf-8')
-    const packageJson = JSON.parse(packageStrs)
-    const dependencies = {
-      ...packageJson.dependencies,
-      ...packageJson.devDependencies,
-      ...packageJson.peerDependencies
-    }
-    for (const name in dependencies) {
-      const versionName = dependencies[name]
-      if (ejsRegex.test(versionName)) {
-        packageStrs = packageStrs.replace(
-          versionName,
-          escapeEjsKey(versionName)
-        )
-      }
-    }
-    await fs.promises.writeFile(packagePath, packageStrs)
+  const packagePath = path.resolve(result.filepath, 'package.json')
+  let packageStrs = await fs.promises.readFile(packagePath, 'utf-8')
+  const packageJson = JSON.parse(packageStrs)
+  const dependencies = {
+    ...packageJson.dependencies,
+    ...packageJson.devDependencies,
+    ...packageJson.peerDependencies
   }
+  for (const name in dependencies) {
+    const versionName = dependencies[name]
+    if (ejsRegex.test(versionName)) {
+      packageStrs = packageStrs.replace(versionName, escapeEjsKey(versionName))
+    }
+  }
+  await fs.promises.writeFile(packagePath, packageStrs)
 
   return result
 }
