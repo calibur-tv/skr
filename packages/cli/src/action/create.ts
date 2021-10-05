@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import { pascalCase, paramCase, camelCase } from 'change-case'
 import {
@@ -31,7 +32,25 @@ export default async (name: string, opts: Record<string, any>) => {
   }
 
   const cwd = process.cwd()
-  const dest = path.join(cwd, opts.dest || '', name)
+  let subpath = opts.dest || ''
+  if (!subpath && fs.existsSync(path.join(cwd, 'lerna.json'))) {
+    const workspace = JSON.parse(
+      await fs.promises.readFile(path.join(cwd, 'lerna.json'), 'utf-8')
+    ).packages
+    if (workspace.length === 1) {
+      subpath = workspace[0].replace('/*', '')
+    } else {
+      subpath = await promptWithDefault({
+        choices: workspace.map((_: string) => _.replace('/*', ''))
+      })
+    }
+  }
+
+  const dest = path.join(cwd, subpath, name)
+  if (!fs.existsSync(path.join(cwd, subpath))) {
+    fs.mkdirSync(path.join(cwd, subpath), { recursive: true })
+  }
+
   if (!isEmptyDir(dest)) {
     if (!opts.force) {
       const answer = await confirmWithExit(
