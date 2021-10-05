@@ -6,48 +6,28 @@ import {
 } from '../utils'
 
 const versionType = [
-  {
-    name: 'major',
-    value: 'major'
-  },
-  {
-    name: 'minor',
-    value: 'minor'
-  },
-  {
-    name: 'patch',
-    value: 'patch'
-  },
-  {
-    name: 'premajor',
-    value: 'premajor'
-  },
-  {
-    name: 'preminor',
-    value: 'preminor'
-  },
-  {
-    name: 'prepatch',
-    value: 'prepatch'
-  },
-  {
-    name: 'prerelease',
-    value: 'prerelease'
-  }
+  'major',
+  'minor',
+  'patch',
+  'premajor',
+  'preminor',
+  'prepatch',
+  'prerelease'
 ]
 
-export default async (
-  name: string,
-  version: string,
-  opts: Record<string, any>
-) => {
+export default async (name: string, opts: Record<string, any>) => {
   const { list, detail } = await getRepositoryPackages(true)
+  console.log(opts)
   name = await promptWithDefault({
-    choices: list
+    choices: list,
+    default: name
   })
-  version = await promptWithDefault({
-    choices: versionType
-  })
+
+  const version =
+    opts.release ||
+    (await promptWithDefault({
+      choices: versionType
+    }))
 
   const dependencies = await getPackageDependencies(name, opts.self)
   const command = [

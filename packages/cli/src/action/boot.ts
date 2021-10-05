@@ -8,7 +8,8 @@ import {
 export default async (packageName: string, options: Record<string, any>) => {
   const { list, detail } = await getRepositoryPackages()
   packageName = await promptWithDefault({
-    choices: list
+    choices: list,
+    default: packageName
   })
 
   if (options.clean) {

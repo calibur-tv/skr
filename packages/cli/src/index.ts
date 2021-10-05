@@ -33,7 +33,10 @@ skr
   .option('--clean, -C', '清理 node_modules')
   .action(boot)
 
-skr.command('run <script>', '执行项目脚本').action(run)
+skr
+  .command('run <script>', '执行项目脚本')
+  .option('--name [name]', '项目名称')
+  .action(run)
 
 skr
   .command('add [...name]', '增加项目依赖')
@@ -43,7 +46,8 @@ skr
   .action(add)
 
 skr
-  .command('release [name] [version]', '发布新版本')
+  .command('release [name]', '发布新版本')
+  .option('--release, -R [release]', '自定义版本号')
   .option('--self, -S', '更新自己的版本')
   .action(release)
 

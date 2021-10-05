@@ -172,11 +172,11 @@ const getPackageDependencies = async (packageName: string, withSelf = true) => {
 
 const promptWithDefault = async (opts: {
   name?: string
-  choices: any[]
+  choices: string[]
   default?: string
   message?: string
 }) => {
-  if (opts.default) {
+  if (opts.default && opts.choices.find((_: string) => _ === opts.default)) {
     return opts.default
   }
 
