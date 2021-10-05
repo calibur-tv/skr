@@ -17,7 +17,6 @@ const versionType = [
 
 export default async (name: string, opts: Record<string, any>) => {
   const { list, detail } = await getRepositoryPackages(true)
-  console.log(opts)
   name = await promptWithDefault({
     choices: list,
     default: name
