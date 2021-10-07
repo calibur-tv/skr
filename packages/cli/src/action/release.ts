@@ -23,7 +23,7 @@ export default async (name: string, opts: Record<string, any>) => {
   })
 
   const version =
-    opts.release ||
+    opts.version ||
     (await promptWithDefault({
       choices: versionType
     }))

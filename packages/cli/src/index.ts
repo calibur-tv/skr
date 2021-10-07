@@ -48,7 +48,7 @@ skr
 
 skr
   .command('release [name]', '发布新版本')
-  .option('--release, -R [release]', '自定义版本号')
+  .option('--version, -V [version]', '自定义版本号')
   .option('--self, -S', '更新自己的版本')
   .action(release)
 
