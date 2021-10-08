@@ -19,7 +19,7 @@
     "eslint-plugin-prettier": "^<%= eslint-plugin-prettier %>",
     "eslint-plugin-vue": "^<%= eslint-plugin-vue %>",
     "lerna": "^<%= lerna %>",
-    "prettier": "^<%= prettier =>",
+    "prettier": "^<%= prettier %>",
     "typescript": "^<%= typescript %>"
   }
 }
