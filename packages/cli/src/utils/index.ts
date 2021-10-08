@@ -72,7 +72,35 @@ const getRemotePackageInfo = async (
     return result
   }
 
+  const formatPackageJson = async () => {
+    const packagePath = path.resolve(result.filepath, 'package.json')
+    const packageJson = JSON.parse(
+      await fs.promises.readFile(packagePath, 'utf-8')
+    )
+    if (packageJson.formatted) {
+      return
+    }
+    packageJson.formatted = true
+    let packageStrs = JSON.stringify(packageJson)
+    const dependencies = {
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
+      ...packageJson.peerDependencies
+    }
+    for (const name in dependencies) {
+      const versionName = dependencies[name]
+      if (ejsRegex.test(versionName)) {
+        packageStrs = packageStrs.replace(
+          versionName,
+          escapeEjsKey(versionName)
+        )
+      }
+    }
+    await fs.promises.writeFile(packagePath, packageStrs)
+  }
+
   if (!download && fs.existsSync(pkgRoot)) {
+    await formatPackageJson()
     return result
   }
 
@@ -84,22 +112,7 @@ const getRemotePackageInfo = async (
     followRedirect: true
   })
   await compressing.tgz.uncompress(rest.res as any, pkgRoot)
-
-  const packagePath = path.resolve(result.filepath, 'package.json')
-  let packageStrs = await fs.promises.readFile(packagePath, 'utf-8')
-  const packageJson = JSON.parse(packageStrs)
-  const dependencies = {
-    ...packageJson.dependencies,
-    ...packageJson.devDependencies,
-    ...packageJson.peerDependencies
-  }
-  for (const name in dependencies) {
-    const versionName = dependencies[name]
-    if (ejsRegex.test(versionName)) {
-      packageStrs = packageStrs.replace(versionName, escapeEjsKey(versionName))
-    }
-  }
-  await fs.promises.writeFile(packagePath, packageStrs)
+  await formatPackageJson()
 
   return result
 }
