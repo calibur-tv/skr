@@ -32,8 +32,9 @@ export default async (name: string, opts: Record<string, any>) => {
   }
 
   const cwd = process.cwd()
+  const isMonorepo = fs.existsSync(path.join(cwd, 'lerna.json'))
   let subpath = opts.dest || ''
-  if (!subpath && fs.existsSync(path.join(cwd, 'lerna.json'))) {
+  if (!subpath && isMonorepo) {
     const workspace = JSON.parse(
       await fs.promises.readFile(path.join(cwd, 'lerna.json'), 'utf-8')
     ).packages
@@ -71,13 +72,15 @@ export default async (name: string, opts: Record<string, any>) => {
     )
   )
 
+  const nameObj = {
+    pascalCase: pascalCase(name),
+    paramCase: paramCase(name),
+    camelCase: camelCase(name)
+  }
   for (const pkg of packages) {
     await writeTemplate(pkg.filepath, dest, {
-      name: {
-        pascalCase: pascalCase(name),
-        paramCase: paramCase(name),
-        camelCase: camelCase(name)
-      }
+      name: nameObj,
+      isMonorepo
     })
   }
 

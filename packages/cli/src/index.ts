@@ -12,7 +12,10 @@ import add from './action/add'
 
 const skr = cac('skr')
 
-skr.command('init', '初始化脚手架').action(init)
+skr
+  .command('init', '初始化脚手架')
+  .option('--url [url]', '初始化文件')
+  .action(init)
 
 skr
   .command('create <name>', '创建项目')
