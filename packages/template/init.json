@@ -4,14 +4,14 @@
       "name": "vue3-ts-component",
       "desc": "",
       "urls": [
-        "@calibur/skr-template#packages/template/vue3-ts-component"
+        "@calibur/skr-template#vue3-ts-component"
       ]
     },
     {
       "name": "vue3-ts-monorepo",
       "desc": "",
       "urls": [
-        "@calibur/skr-template#packages/template/vue3-ts-monorepo"
+        "@calibur/skr-template#vue3-ts-monorepo"
       ]
     }
   ]
