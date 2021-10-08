@@ -1,14 +1,14 @@
 import axios from 'axios'
 import { execCommand } from '../utils'
+import { version } from '../../../template/package.json'
 import configManager from '../manager/config'
 
-const DEFAULT_JSON =
-  'https://cdn.jsdelivr.net/gh/calibur-tv/skr@master/packages/template/init.json'
+const DEFAULT_JSON = `https://cdn.jsdelivr.net/gh/calibur-tv/skr@main/packages/template/init.json?v=${version}`
 
 export default async (opts: Record<string, any>) => {
   console.log('skr init start！')
   try {
-    await execCommand('npm list lerna', false)
+    await execCommand('lerna -v', false)
   } catch (e) {
     console.log('installing lerna...')
     await execCommand('npm install lerna -g')
