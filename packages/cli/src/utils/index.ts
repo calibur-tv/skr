@@ -32,17 +32,15 @@ const execCommand = (action: string, log = true): Promise<any> => {
 }
 
 const getRepositoryPackages = async (noPrivate = false) => {
-  const info = await exec('lerna ls --json')
+  const info = await exec(noPrivate ? 'lerna ls --json' : 'lerna ls -a --json')
   const stdout = JSON.parse(info.stdout)
-  const pkg = stdout
-    .filter((_: Record<string, any>) => (noPrivate ? !_.private : true))
-    .map((_: Record<string, any>) => {
-      return {
-        ..._,
-        title: _.name,
-        value: _.name
-      }
-    })
+  const pkg = stdout.map((_: Record<string, any>) => {
+    return {
+      ..._,
+      title: _.name,
+      value: _.name
+    }
+  })
 
   return {
     detail: pkg,
@@ -74,14 +72,11 @@ const getRemotePackageInfo = async (
 
   const formatPackageJson = async () => {
     const packagePath = path.resolve(result.filepath, 'package.json')
-    const packageJson = JSON.parse(
-      await fs.promises.readFile(packagePath, 'utf-8')
-    )
-    if (packageJson.formatted) {
+    let packageStrs = await fs.promises.readFile(packagePath, 'utf-8')
+    if (/_1A_|_2B_|_3C_|_4D_/.test(packageStrs)) {
       return
     }
-    packageJson.formatted = true
-    let packageStrs = JSON.stringify(packageJson)
+    const packageJson = JSON.parse(packageStrs)
     const dependencies = {
       ...packageJson.dependencies,
       ...packageJson.devDependencies,
@@ -190,6 +185,12 @@ const promptWithDefault = async (opts: {
   default?: string
   message?: string
 }) => {
+  if (!opts.choices.length) {
+    console.log('执行操作的选项为空')
+    process.exit(1)
+    return
+  }
+
   if (opts.default && opts.choices.find((_: string) => _ === opts.default)) {
     return opts.default
   }

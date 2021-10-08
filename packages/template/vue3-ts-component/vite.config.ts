@@ -19,7 +19,7 @@ export default defineConfig({
     }
   },
   server: {
-    port: process.env.port || 3000,
+    port: parseInt(process.env.port || '3000'),
     open: true
   },
   plugins: [vue(), host()]
