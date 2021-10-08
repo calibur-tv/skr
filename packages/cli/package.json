@@ -29,5 +29,6 @@
     "@types/toposort": "^2.0.3",
     "compressing": "^1.5.1",
     "tsup": "^5.3.0"
-  }
+  },
+  "gitHead": "5c9d4dfe90f1f7860fad671d549f0176e719d5f6"
 }
