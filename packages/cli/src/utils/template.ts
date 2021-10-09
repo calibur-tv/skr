@@ -63,7 +63,8 @@ const writeTemplate = async (
 
   const hasConfigFile = files.indexOf(TEMPLATE_CONF_FILE) !== -1
   if (hasConfigFile) {
-    const configScript = await import(path.join(input, TEMPLATE_CONF_FILE))
+    const configScript = (await import(path.join(input, TEMPLATE_CONF_FILE)))
+      .default
     const configData = await configScript({ ...config })
     config = {
       ...config,

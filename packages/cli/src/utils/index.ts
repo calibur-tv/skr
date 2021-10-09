@@ -229,6 +229,10 @@ const inputWithValidator = async (opts: {
   validator?: (value: string) => boolean
   failed?: () => void
 }) => {
+  if (opts.initial && (!opts.validator || opts.validator(opts.initial))) {
+    return opts.initial
+  }
+
   try {
     const prompt = new Input({
       message: opts.message,

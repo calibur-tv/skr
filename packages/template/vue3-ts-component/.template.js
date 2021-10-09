@@ -3,3 +3,5 @@ const generateCurrentTime = async () => {
     currentTime: Date.now()
   }
 }
+
+export default generateCurrentTime
