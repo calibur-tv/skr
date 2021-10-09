@@ -1,6 +1,5 @@
 {
-<% if (isMonorepo) { %>  "extends": "../../tsconfig.json",
-<% } else { %>  "compilerOptions": {
+<% if (isMonorepo) { %>  "extends": "../../tsconfig.json",<% } else { %>  "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
