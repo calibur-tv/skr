@@ -5,11 +5,15 @@ import toposort from 'toposort'
 import urllib from 'urllib'
 import fsExtra from 'fs-extra'
 import compressing from 'compressing'
-import { Confirm, AutoComplete } from 'enquirer'
+import { Input, Confirm, AutoComplete } from 'enquirer'
 import { escapeEjsKey } from './template'
 
 // https://github.com/mde/ejs/blob/main/lib/ejs.js#L60
 const ejsRegex = new RegExp('(<%%|%%>|<%=|<%-|<%_|<%#|<%|%>|-%>|_%>)')
+
+// https://github.com/vitejs/vite/blob/main/packages/create-vite/index.js#L288
+const isValidPackageName = (projectName: string): boolean =>
+  /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(projectName)
 
 const execCommand = (action: string, log = true): Promise<any> => {
   const arr: string[] = action.trim().split(' ')
@@ -219,6 +223,38 @@ const confirmWithExit = async (message: string) => {
   }
 }
 
+const inputWithValidator = async (opts: {
+  message: string
+  initial?: string
+  validator?: (value: string) => boolean
+  failed?: () => void
+}) => {
+  try {
+    const prompt = new Input({
+      message: opts.message,
+      initial: opts.initial
+    })
+
+    const result = await prompt.run()
+
+    if (!opts.validator) {
+      process.exit()
+    }
+
+    const valid = opts.validator(result)
+    if (!valid) {
+      if (opts.failed) {
+        opts.failed()
+      }
+      process.exit()
+    }
+
+    return result
+  } catch (e) {
+    process.exit()
+  }
+}
+
 const isEmptyDir = (filepath: string): boolean =>
   !fs.existsSync(filepath) || fs.readdirSync(filepath).length === 0
 
@@ -243,6 +279,8 @@ export {
   isEmptyDir,
   makeDirEmpty,
   execCommand,
+  isValidPackageName,
+  inputWithValidator,
   getRepositoryPackages,
   getPackageDependencies,
   updatePackageJson,

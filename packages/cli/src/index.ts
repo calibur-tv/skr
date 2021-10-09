@@ -18,7 +18,7 @@ skr
   .action(init)
 
 skr
-  .command('create <name>', '创建项目')
+  .command('create [name]', '创建项目')
   .option('--template [template]', '模板名称')
   .option('--dest [dest]', '输出目录')
   .option('--force, -R', '清空目录')

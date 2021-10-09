@@ -1,4 +1,7 @@
-<template><<%= name.paramCase %> msg="hello <%= name.pascalCase %>" /></template>
+<template>
+  <<%= name.paramCase %> msg="hello <%= name.pascalCase %>" />
+  <p>this file generated at：<%= currentTime %></p>
+</template>
 
 <script setup lang="ts">
 import <%= name.pascalCase %> from './components/index.vue'
