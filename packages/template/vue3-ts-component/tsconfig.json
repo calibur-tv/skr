@@ -1,8 +1,6 @@
 {
-<% if (isMonorepo) { %>
-  "extends": "../../tsconfig.json",
-<% } else { %>
-  "compilerOptions": {
+<% if (isMonorepo) { %>  "extends": "../../tsconfig.json",
+<% } else { %>  "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
@@ -16,7 +14,6 @@
       "esnext",
       "dom"
     ]
-  },
-<% } %>
+  },<% } %>
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
