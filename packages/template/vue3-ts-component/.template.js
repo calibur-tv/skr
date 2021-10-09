@@ -4,4 +4,4 @@ const generateCurrentTime = async () => {
   }
 }
 
-export default generateCurrentTime
+module.exports = generateCurrentTime
