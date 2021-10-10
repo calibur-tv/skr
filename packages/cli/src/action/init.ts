@@ -22,6 +22,6 @@ export default async (opts: Record<string, any>) => {
   const requestUrl = opts.url || DEFAULT_JSON
   console.log('loading init file...', requestUrl)
   const resp = await axios.get(requestUrl)
-  configManager.set(resp.data)
+  resp.data && configManager.set(resp.data)
   console.log('skr init success！')
 }
