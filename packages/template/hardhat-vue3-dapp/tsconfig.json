@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"]
+  },
+  "exclude": ["node_modules"],
+  "include": [
+    "tasks/**/*.ts",
+    "test/**/*.ts",
+    "typechain/**/*.ts",
+    "frentend/**/*.ts",
+    "frentend/**/*.tsx",
+    "frentend/**/*.vue"
+  ],
+  "files": ["./hardhat.config.ts"]
+}

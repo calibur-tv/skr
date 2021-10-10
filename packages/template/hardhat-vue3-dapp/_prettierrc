@@ -1,0 +1,25 @@
+{
+  overrides: [
+    {
+      files: "*.sol",
+      options:  {
+        tabWidth: 4,
+          arrowParens: "avoid",
+          bracketSpacing: true,
+          endOfLine: "auto",
+          printWidth: 120,
+          singleQuote: false,
+          trailingComma: "all",
+      }
+    },
+    {
+      files: "!*.sol",
+      options: {
+          semi: false,
+          arrowParens: "always",
+          singleQuote: true,
+          trailingComma: "none"
+      }
+    }
+  ]
+}
