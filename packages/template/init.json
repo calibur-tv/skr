@@ -13,6 +13,13 @@
       "urls": [
         "@calibur/skr-template#vue3-ts-monorepo"
       ]
+    },
+    {
+      "name": "hardhat-vue3-dapp",
+      "desc": "",
+      "urls": [
+        "@calibur/skr-template#hardhat-vue3-dapp"
+      ]
     }
   ]
 }
