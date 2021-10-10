@@ -2,8 +2,9 @@
   "name": "<%= name.paramCase %>",
   "private": true,
   "version": "0.0.0",
-  "main": "dist/<%= name.paramCase %>.umd.js",
-  "module": "dist/<%= name.paramCase %>.es.js",
+  "main": "./dist/<%= name.paramCase %>.umd.js",
+  "module": "./dist/<%= name.paramCase %>.es.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",

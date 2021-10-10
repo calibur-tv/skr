@@ -5,11 +5,15 @@ import toposort from 'toposort'
 import urllib from 'urllib'
 import fsExtra from 'fs-extra'
 import compressing from 'compressing'
-import { Confirm, AutoComplete } from 'enquirer'
+import { Input, Confirm, AutoComplete } from 'enquirer'
 import { escapeEjsKey } from './template'
 
 // https://github.com/mde/ejs/blob/main/lib/ejs.js#L60
 const ejsRegex = new RegExp('(<%%|%%>|<%=|<%-|<%_|<%#|<%|%>|-%>|_%>)')
+
+// https://github.com/vitejs/vite/blob/main/packages/create-vite/index.js#L288
+const isValidPackageName = (projectName: string): boolean =>
+  /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(projectName)
 
 const execCommand = (action: string, log = true): Promise<any> => {
   const arr: string[] = action.trim().split(' ')
@@ -32,17 +36,15 @@ const execCommand = (action: string, log = true): Promise<any> => {
 }
 
 const getRepositoryPackages = async (noPrivate = false) => {
-  const info = await exec('lerna ls --json')
+  const info = await exec(noPrivate ? 'lerna ls --json' : 'lerna ls -a --json')
   const stdout = JSON.parse(info.stdout)
-  const pkg = stdout
-    .filter((_: Record<string, any>) => (noPrivate ? !_.private : true))
-    .map((_: Record<string, any>) => {
-      return {
-        ..._,
-        title: _.name,
-        value: _.name
-      }
-    })
+  const pkg = stdout.map((_: Record<string, any>) => {
+    return {
+      ..._,
+      title: _.name,
+      value: _.name
+    }
+  })
 
   return {
     detail: pkg,
@@ -72,7 +74,32 @@ const getRemotePackageInfo = async (
     return result
   }
 
+  const formatPackageJson = async () => {
+    const packagePath = path.resolve(result.filepath, 'package.json')
+    let packageStrs = await fs.promises.readFile(packagePath, 'utf-8')
+    if (/_1A_|_2B_|_3C_|_4D_/.test(packageStrs)) {
+      return
+    }
+    const packageJson = JSON.parse(packageStrs)
+    const dependencies = {
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
+      ...packageJson.peerDependencies
+    }
+    for (const name in dependencies) {
+      const versionName = dependencies[name]
+      if (ejsRegex.test(versionName)) {
+        packageStrs = packageStrs.replace(
+          versionName,
+          escapeEjsKey(versionName)
+        )
+      }
+    }
+    await fs.promises.writeFile(packagePath, packageStrs)
+  }
+
   if (!download && fs.existsSync(pkgRoot)) {
+    await formatPackageJson()
     return result
   }
 
@@ -84,22 +111,7 @@ const getRemotePackageInfo = async (
     followRedirect: true
   })
   await compressing.tgz.uncompress(rest.res as any, pkgRoot)
-
-  const packagePath = path.resolve(result.filepath, 'package.json')
-  let packageStrs = await fs.promises.readFile(packagePath, 'utf-8')
-  const packageJson = JSON.parse(packageStrs)
-  const dependencies = {
-    ...packageJson.dependencies,
-    ...packageJson.devDependencies,
-    ...packageJson.peerDependencies
-  }
-  for (const name in dependencies) {
-    const versionName = dependencies[name]
-    if (ejsRegex.test(versionName)) {
-      packageStrs = packageStrs.replace(versionName, escapeEjsKey(versionName))
-    }
-  }
-  await fs.promises.writeFile(packagePath, packageStrs)
+  await formatPackageJson()
 
   return result
 }
@@ -177,6 +189,12 @@ const promptWithDefault = async (opts: {
   default?: string
   message?: string
 }) => {
+  if (!opts.choices.length) {
+    console.log('执行操作的选项为空')
+    process.exit(1)
+    return
+  }
+
   if (opts.default && opts.choices.find((_: string) => _ === opts.default)) {
     return opts.default
   }
@@ -205,6 +223,42 @@ const confirmWithExit = async (message: string) => {
   }
 }
 
+const inputWithValidator = async (opts: {
+  message: string
+  initial?: string
+  validator?: (value: string) => boolean
+  failed?: () => void
+}) => {
+  if (opts.initial && (!opts.validator || opts.validator(opts.initial))) {
+    return opts.initial
+  }
+
+  try {
+    const prompt = new Input({
+      message: opts.message,
+      initial: opts.initial
+    })
+
+    const result = await prompt.run()
+
+    if (!opts.validator) {
+      process.exit()
+    }
+
+    const valid = opts.validator(result)
+    if (!valid) {
+      if (opts.failed) {
+        opts.failed()
+      }
+      process.exit()
+    }
+
+    return result
+  } catch (e) {
+    process.exit()
+  }
+}
+
 const isEmptyDir = (filepath: string): boolean =>
   !fs.existsSync(filepath) || fs.readdirSync(filepath).length === 0
 
@@ -229,6 +283,8 @@ export {
   isEmptyDir,
   makeDirEmpty,
   execCommand,
+  isValidPackageName,
+  inputWithValidator,
   getRepositoryPackages,
   getPackageDependencies,
   updatePackageJson,

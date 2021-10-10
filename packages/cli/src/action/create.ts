@@ -6,12 +6,20 @@ import {
   getRemotePackageInfo,
   isEmptyDir,
   makeDirEmpty,
-  confirmWithExit
+  confirmWithExit,
+  isValidPackageName,
+  inputWithValidator
 } from '../utils'
 import configManager from '../manager/config'
 import { writeTemplate } from '../utils/template'
 
 export default async (name: string, opts: Record<string, any>) => {
+  name = await inputWithValidator({
+    message: '请输入项目名',
+    initial: name,
+    validator: (val) => isValidPackageName(val),
+    failed: () => console.log('非法的项目名')
+  })
   const config = configManager.get()
   const templates = config.templates || []
   if (!templates.length) {
@@ -21,7 +29,8 @@ export default async (name: string, opts: Record<string, any>) => {
 
   const templateName = await promptWithDefault({
     choices: templates.map((_: Record<string, any>) => _.name),
-    default: opts.template
+    default: opts.template,
+    message: '请选择模板'
   })
   const templateInfo = templates.find(
     (_: Record<string, any>) => _.name === templateName
@@ -32,8 +41,9 @@ export default async (name: string, opts: Record<string, any>) => {
   }
 
   const cwd = process.cwd()
+  const isMonorepo = fs.existsSync(path.join(cwd, 'lerna.json'))
   let subpath = opts.dest || ''
-  if (!subpath && fs.existsSync(path.join(cwd, 'lerna.json'))) {
+  if (!subpath && isMonorepo) {
     const workspace = JSON.parse(
       await fs.promises.readFile(path.join(cwd, 'lerna.json'), 'utf-8')
     ).packages
@@ -71,13 +81,15 @@ export default async (name: string, opts: Record<string, any>) => {
     )
   )
 
+  const nameObj = {
+    pascalCase: pascalCase(name),
+    paramCase: paramCase(name),
+    camelCase: camelCase(name)
+  }
   for (const pkg of packages) {
     await writeTemplate(pkg.filepath, dest, {
-      name: {
-        pascalCase: pascalCase(name),
-        paramCase: paramCase(name),
-        camelCase: camelCase(name)
-      }
+      name: nameObj,
+      isMonorepo
     })
   }
 

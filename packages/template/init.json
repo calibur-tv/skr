@@ -1,0 +1,18 @@
+{
+  "templates": [
+    {
+      "name": "vue3-ts-component",
+      "desc": "",
+      "urls": [
+        "@calibur/skr-template#vue3-ts-component"
+      ]
+    },
+    {
+      "name": "vue3-ts-monorepo",
+      "desc": "",
+      "urls": [
+        "@calibur/skr-template#vue3-ts-monorepo"
+      ]
+    }
+  ]
+}

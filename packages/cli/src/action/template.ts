@@ -34,6 +34,10 @@ export default async (
     return
   }
 
+  if (!urls || !urls.length) {
+    return
+  }
+
   templates.push({
     name,
     desc: opts.desc || urls.join(' + '),
