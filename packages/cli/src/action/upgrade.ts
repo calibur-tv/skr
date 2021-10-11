@@ -9,4 +9,5 @@ export default async () => {
   }
 
   await execCommand(`npm install ${name} -g`)
+  console.log(`${name} is latest version：${latest}！`)
 }

@@ -20,6 +20,8 @@ const unescpaeEjsKey = (key: string): string =>
     .replace(/_3C_/g, '-')
     .replace(/_4D_/g, '.')
 
+const isFunction = (val: any): boolean => val && typeof val === 'function'
+
 const writeTemplate = async (
   input: string,
   output: string,
@@ -36,8 +38,7 @@ const writeTemplate = async (
   if (files.indexOf(TEMPLATE_CONF_FILE) !== -1) {
     configScript = await import(path.join(input, TEMPLATE_CONF_FILE))
   }
-
-  if (configScript?.init) {
+  if (isFunction(configScript?.init)) {
     const hook1Data = await configScript.init({ ...configResult })
     configResult = {
       ...configResult,
@@ -77,7 +78,7 @@ const writeTemplate = async (
     ...configResult
   }
 
-  if (configScript?.copy) {
+  if (isFunction(configScript?.copy)) {
     const hook2Data = await configScript.copy({ ...configResult })
     configResult = {
       ...configResult,
@@ -95,7 +96,7 @@ const writeTemplate = async (
     )
   }
 
-  if (configScript?.done) {
+  if (isFunction(configScript?.done)) {
     await configScript.done({ ...configResult })
   }
 }
