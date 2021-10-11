@@ -1,20 +1,28 @@
-const init = async (opts) => {
+const beforeCheckVersion = async (opts) => {
   console.log('this hook called before check version', opts);
 }
 
-const copy = async (opts) => {
-  console.log('this hook called before copy files', opts);
+const afterCheckVersion = async (opts) => {
+  console.log('this hook called after check version', opts);
   return {
     currentTime: Date.now()
   }
 }
 
-const done = async (opts) => {
+const beforeCopyFiles = async (opts, files) => {
+  console.log('this hook called before copy files', opts);
+  if (opts.isMonorepo) {
+    return files.filter(_ => !_.startsWith('_'))
+  }
+}
+
+const afterCopyFiles = async (opts) => {
   console.log('this hook called after copy files', opts);
 }
 
 module.exports = {
-  init,
-  copy,
-  done
+  beforeCheckVersion,
+  afterCheckVersion,
+  beforeCopyFiles,
+  afterCopyFiles
 }

@@ -27,7 +27,7 @@ const writeTemplate = async (
   output: string,
   opts: Record<string, any> = {}
 ) => {
-  const files = fs.readdirSync(input)
+  let files = fs.readdirSync(input)
   const hasInfoFile = files.indexOf(TEMPLATE_INFO_FILE) !== -1
   const versionMap: Record<string, string> = {}
 
@@ -38,8 +38,8 @@ const writeTemplate = async (
   if (files.indexOf(TEMPLATE_CONF_FILE) !== -1) {
     configScript = await import(path.join(input, TEMPLATE_CONF_FILE))
   }
-  if (isFunction(configScript?.init)) {
-    const hook1Data = await configScript.init({ ...configResult })
+  if (isFunction(configScript?.beforeCheckVersion)) {
+    const hook1Data = await configScript.beforeCheckVersion({ ...configResult })
     configResult = {
       ...configResult,
       ...hook1Data
@@ -78,11 +78,20 @@ const writeTemplate = async (
     ...configResult
   }
 
-  if (isFunction(configScript?.copy)) {
-    const hook2Data = await configScript.copy({ ...configResult })
+  if (isFunction(configScript?.afterCheckVersion)) {
+    const hook2Data = await configScript.afterCheckVersion({ ...configResult })
     configResult = {
       ...configResult,
       ...hook2Data
+    }
+  }
+
+  if (isFunction(configScript?.beforeCopyFiles)) {
+    const hook3Data = await configScript.beforeCopyFiles({ ...configResult }, [
+      ...files
+    ])
+    if (hook3Data) {
+      files = hook3Data
     }
   }
 
@@ -96,8 +105,8 @@ const writeTemplate = async (
     )
   }
 
-  if (isFunction(configScript?.done)) {
-    await configScript.done({ ...configResult })
+  if (isFunction(configScript?.afterCopyFiles)) {
+    await configScript.afterCopyFiles({ ...configResult })
   }
 }
 
