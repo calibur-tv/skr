@@ -3,6 +3,7 @@ import cac from 'cac'
 import { version } from '../package.json'
 import template from './action/template'
 import release from './action/release'
+import upgrade from './action/upgrade'
 import deploy from './action/deploy'
 import create from './action/create'
 import init from './action/init'
@@ -16,6 +17,8 @@ skr
   .command('init', '初始化脚手架')
   .option('--url [url]', '初始化文件')
   .action(init)
+
+skr.command('upgrade', '升级脚手架').action(upgrade)
 
 skr
   .command('create [name]', '创建项目')

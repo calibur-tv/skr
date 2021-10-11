@@ -29,6 +29,22 @@ const writeTemplate = async (
   const hasInfoFile = files.indexOf(TEMPLATE_INFO_FILE) !== -1
   const versionMap: Record<string, string> = {}
 
+  let configResult = {
+    ...opts
+  }
+  let configScript = null
+  if (files.indexOf(TEMPLATE_CONF_FILE) !== -1) {
+    configScript = await import(path.join(input, TEMPLATE_CONF_FILE))
+  }
+
+  if (configScript?.init) {
+    const hook1Data = await configScript.init({ ...configResult })
+    configResult = {
+      ...configResult,
+      ...hook1Data
+    }
+  }
+
   if (hasInfoFile) {
     const packageJson = JSON.parse(
       await fs.promises.readFile(path.join(input, TEMPLATE_INFO_FILE), 'utf-8')
@@ -56,19 +72,16 @@ const writeTemplate = async (
     })
   }
 
-  let config = {
+  configResult = {
     ...versionMap,
-    ...opts
+    ...configResult
   }
 
-  const hasConfigFile = files.indexOf(TEMPLATE_CONF_FILE) !== -1
-  if (hasConfigFile) {
-    const configScript = (await import(path.join(input, TEMPLATE_CONF_FILE)))
-      .default
-    const configData = await configScript({ ...config })
-    config = {
-      ...config,
-      ...configData
+  if (configScript?.copy) {
+    const hook2Data = await configScript.copy({ ...configResult })
+    configResult = {
+      ...configResult,
+      ...hook2Data
     }
   }
 
@@ -78,8 +91,12 @@ const writeTemplate = async (
     copy(
       path.join(input, filename),
       path.join(output, filename.replace('_', '.')),
-      config
+      configResult
     )
+  }
+
+  if (configScript?.done) {
+    await configScript.done({ ...configResult })
   }
 }
 
