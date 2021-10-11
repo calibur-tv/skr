@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import ejs from 'ejs'
+import axios from 'axios'
 import { ejsRegex, getRemotePackageInfo } from './index'
 
 const TEMPLATE_CONF_FILE = '.template.js'
@@ -39,7 +40,10 @@ const writeTemplate = async (
     configScript = await import(path.join(input, TEMPLATE_CONF_FILE))
   }
   if (isFunction(configScript?.beforeCheckVersion)) {
-    const hook1Data = await configScript.beforeCheckVersion({ ...configResult })
+    const hook1Data = await configScript.beforeCheckVersion(
+      { ...configResult },
+      axios
+    )
     configResult = {
       ...configResult,
       ...hook1Data
@@ -79,7 +83,10 @@ const writeTemplate = async (
   }
 
   if (isFunction(configScript?.afterCheckVersion)) {
-    const hook2Data = await configScript.afterCheckVersion({ ...configResult })
+    const hook2Data = await configScript.afterCheckVersion(
+      { ...configResult },
+      axios
+    )
     configResult = {
       ...configResult,
       ...hook2Data
@@ -87,9 +94,11 @@ const writeTemplate = async (
   }
 
   if (isFunction(configScript?.beforeCopyFiles)) {
-    const hook3Data = await configScript.beforeCopyFiles({ ...configResult }, [
-      ...files
-    ])
+    const hook3Data = await configScript.beforeCopyFiles(
+      { ...configResult },
+      [...files],
+      axios
+    )
     if (hook3Data) {
       files = hook3Data
     }
@@ -106,7 +115,7 @@ const writeTemplate = async (
   }
 
   if (isFunction(configScript?.afterCopyFiles)) {
-    await configScript.afterCopyFiles({ ...configResult })
+    await configScript.afterCopyFiles({ ...configResult }, axios)
   }
 }
 

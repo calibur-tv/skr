@@ -48,6 +48,7 @@
     "prettier-plugin-solidity": "^<%= prettier-plugin-solidity %>",
     "sass": "^<%= sass %>",
     "shx": "^<%= shx %>",
+    "solc": "^<%= solc %>",
     "solhint": "^<%= solhint %>",
     "solhint-plugin-prettier": "^<%= solhint-plugin-prettier %>",
     "solidity-coverage": "^<%= solidity-coverage %>",

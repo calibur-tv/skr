@@ -1,23 +1,23 @@
-const beforeCheckVersion = async (opts) => {
-  // console.log('this hook called before check version', opts);
+const beforeCheckVersion = async (opts, axios) => {
+  // console.log('this hook called before check version', opts, axios);
 }
 
-const afterCheckVersion = async (opts) => {
-  // console.log('this hook called after check version', opts);
+const afterCheckVersion = async (opts, axios) => {
+  // console.log('this hook called after check version', opts, axios);
   return {
     currentTime: Date.now()
   }
 }
 
-const beforeCopyFiles = async (opts, files) => {
-  // console.log('this hook called before copy files', opts);
+const beforeCopyFiles = async (opts, files, axios) => {
+  // console.log('this hook called before copy files', opts, axios);
   if (opts.isMonorepo) {
     return files.filter(_ => !_.startsWith('_'))
   }
 }
 
-const afterCopyFiles = async (opts) => {
-  // console.log('this hook called after copy files', opts);
+const afterCopyFiles = async (opts, axios) => {
+  // console.log('this hook called after copy files', opts, axios);
 }
 
 module.exports = {
