@@ -3,19 +3,27 @@ import { join } from 'path'
 import { task } from 'hardhat/config'
 import { Token, Token__factory } from '../../typechain'
 
-task('deploy:Token').setAction(async (taskArgs, { ethers }) => {
-  const [deployer] = await ethers.getSigners()
+task('deploy:Token')
+  .addParam('name')
+  .setAction(async (TaskArguments, { config, ethers, network, run }) => {
+    const [deployer] = await ethers.getSigners()
 
-  console.log('Deploying contracts with the account:', deployer.address)
-  console.log('Account balance:', (await deployer.getBalance()).toString())
+    console.log('Deploying contracts with the account:', deployer.address)
+    console.log('Account balance:', (await deployer.getBalance()).toString())
+    const Token: Token__factory = await ethers.getContractFactory('Token')
+    const token: Token = <Token>await Token.deploy(TaskArguments.name)
 
-  const Token: Token__factory = await ethers.getContractFactory('Token')
-  const token: Token = <Token>await Token.deploy()
+    await token.deployed()
+    console.log('Token deployed to: ', token.address)
+    await saveFrontendFiles(token)
 
-  await token.deployed()
-  console.log('Token deployed to: ', token.address)
-  await saveFrontendFiles(token)
-})
+    if (network.name !== 'hardhat' && config.etherscan.apiKey) {
+      await run('verify:verify', {
+        address: token.address,
+        constructorArguments: [TaskArguments.greeting]
+      })
+    }
+  })
 
 const saveFrontendFiles = async (token: Token) => {
   const contractsDir = join(process.cwd(), '/frontend/contracts')

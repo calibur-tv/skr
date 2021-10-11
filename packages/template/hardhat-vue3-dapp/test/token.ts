@@ -29,7 +29,7 @@ describe('Token contract', function () {
     // To deploy our contract, we just have to call Token.deploy() and await
     // for it to be deployed(), which happens once its transaction has been
     // mined.
-    Token = <Token>await contractFactory.deploy()
+    Token = <Token>await contractFactory.deploy('NFT')
   })
 
   // You can nest describe calls to create subsections.
