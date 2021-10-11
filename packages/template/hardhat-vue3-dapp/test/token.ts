@@ -24,7 +24,7 @@ describe('Token contract', function () {
   beforeEach(async function () {
     // Get the ContractFactory and Signers here.
     const contractFactory = await ethers.getContractFactory('Token')
-      ;[owner, addr1, addr2] = await ethers.getSigners()
+    ;[owner, addr1, addr2] = await ethers.getSigners()
 
     // To deploy our contract, we just have to call Token.deploy() and await
     // for it to be deployed(), which happens once its transaction has been
