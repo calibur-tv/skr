@@ -41,7 +41,7 @@ skr
   .action(boot)
 
 skr
-  .command('run <script>', '执行项目脚本')
+  .command('run [script]', '执行项目脚本')
   .option('--name [name]', '项目名称')
   .action(run)
 
