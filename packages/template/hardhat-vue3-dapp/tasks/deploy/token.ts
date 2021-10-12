@@ -21,7 +21,7 @@ task('deploy:Token')
     if (network.name !== 'hardhat' && config.etherscan.apiKey) {
       await run('verify:verify', {
         address: token.address,
-        constructorArguments: [TaskArguments.greeting]
+        constructorArguments: [TaskArguments.name]
       })
     }
   })
