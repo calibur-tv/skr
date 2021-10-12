@@ -10,16 +10,16 @@
     "lint": "eslint --ext js,jsx,ts,tsx,vue . --fix"
   },
   "devDependencies": {
-    "@types/node": "^<%= @types/node %>",
-    "@typescript-eslint/eslint-plugin": "^<%= typescript %>",
-    "@typescript-eslint/parser": "^<%= typescript %>",
-    "@vue/eslint-config-prettier": "^<%= @vue/eslint-config-prettier %>",
-    "@vue/eslint-config-typescript": "^<%= @vue/eslint-config-typescript %>",
-    "eslint": "^<%= eslint %>",
-    "eslint-plugin-prettier": "^<%= eslint-plugin-prettier %>",
-    "eslint-plugin-vue": "^<%= eslint-plugin-vue %>",
-    "lerna": "^<%= lerna %>",
-    "prettier": "^<%= prettier %>",
-    "typescript": "^<%= typescript %>"
+    "@types/node": "<%= @types/node %>",
+    "@typescript-eslint/eslint-plugin": "<%= typescript %>",
+    "@typescript-eslint/parser": "<%= typescript %>",
+    "@vue/eslint-config-prettier": "<%= @vue/eslint-config-prettier %>",
+    "@vue/eslint-config-typescript": "<%= @vue/eslint-config-typescript %>",
+    "eslint": "<%= eslint %>",
+    "eslint-plugin-prettier": "<%= eslint-plugin-prettier %>",
+    "eslint-plugin-vue": "<%= eslint-plugin-vue %>",
+    "lerna": "<%= lerna %>",
+    "prettier": "<%= prettier %>",
+    "typescript": "<%= typescript %>"
   }
 }

@@ -1,11 +1,12 @@
 import fs from 'fs'
 import { join } from 'path'
 import { task } from 'hardhat/config'
+import { Artifacts } from 'hardhat/types'
 import { Token, Token__factory } from '../../typechain'
 
 task('deploy:Token')
-  .addParam('name')
-  .setAction(async (TaskArguments, { config, ethers, network, run }) => {
+  .addOptionalParam('name', 'the token name', 'echo')
+  .setAction(async (TaskArguments, { artifacts, config, ethers, network, run }) => {
     const [deployer] = await ethers.getSigners()
 
     console.log('Deploying contracts with the account:', deployer.address)
@@ -15,7 +16,7 @@ task('deploy:Token')
 
     await token.deployed()
     console.log('Token deployed to: ', token.address)
-    await saveFrontendFiles(token)
+    await saveFrontendFiles(token, artifacts)
 
     if (network.name !== 'hardhat' && config.etherscan.apiKey) {
       await run('verify:verify', {
@@ -25,7 +26,7 @@ task('deploy:Token')
     }
   })
 
-const saveFrontendFiles = async (token: Token) => {
+const saveFrontendFiles = async (token: Token, artifacts: Artifacts) => {
   const contractsDir = join(process.cwd(), '/frontend/contracts')
 
   if (!fs.existsSync(contractsDir)) {
@@ -37,7 +38,6 @@ const saveFrontendFiles = async (token: Token) => {
     JSON.stringify({ Token: token.address }, null, 2)
   )
 
-  const artifacts = (await import('hardhat')).artifacts
   const TokenArtifact = artifacts.readArtifactSync('Token')
 
   fs.writeFileSync(
