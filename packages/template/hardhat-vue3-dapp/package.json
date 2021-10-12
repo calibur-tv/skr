@@ -54,7 +54,7 @@
     "typechain": "<%= typechain %>",
     "typescript": "<%= typescript %>",
     "vite": "<%= vite %>",
-    "vite-plugin-components": "<%= vite-plugin-components %>",
+    "unplugin-vue-components": "<%= unplugin-vue-components %>",
     "vite-plugin-host": "<%= vite-plugin-host %>",
     "vite-plugin-style-import": "<%= vite-plugin-style-import %>",
     "vue-tsc": "<%= vue-tsc %>"
