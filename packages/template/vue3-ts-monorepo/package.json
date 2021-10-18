@@ -11,8 +11,8 @@
   },
   "devDependencies": {
     "@types/node": "<%= @types/node %>",
-    "@typescript-eslint/eslint-plugin": "<%= typescript %>",
-    "@typescript-eslint/parser": "<%= typescript %>",
+    "@typescript-eslint/eslint-plugin": "<%= @typescript-eslint/eslint-plugin %>",
+    "@typescript-eslint/parser": "<%= @typescript-eslint/eslint-plugin %>",
     "@vue/eslint-config-prettier": "<%= @vue/eslint-config-prettier %>",
     "@vue/eslint-config-typescript": "<%= @vue/eslint-config-typescript %>",
     "eslint": "<%= eslint %>",
