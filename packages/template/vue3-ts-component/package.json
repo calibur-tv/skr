@@ -20,9 +20,21 @@
     "@vue/server-renderer": "<%= vue@next %>",
     "normalize.css": "<%= normalize.css %>",
     "sass": "<%= sass %>",
-    "typescript": "<%= typescript %>",
     "vite": "<%= vite %>",
     "vite-plugin-host": "<%= vite-plugin-host %>",
-    "vue-tsc": "<%= vue-tsc %>"
+    "vue-tsc": "<%= vue-tsc %>",
+<% if (isMonorepo) { %>
+    "@types/node": "<%= @types/node %>",
+    "@typescript-eslint/eslint-plugin": "<%= @typescript-eslint/eslint-plugin %>",
+    "@typescript-eslint/parser": "<%= @typescript-eslint/eslint-plugin %>",
+    "@vue/eslint-config-prettier": "<%= @vue/eslint-config-prettier %>",
+    "@vue/eslint-config-typescript": "<%= @vue/eslint-config-typescript %>",
+    "eslint": "<%= eslint %>",
+    "eslint-plugin-prettier": "<%= eslint-plugin-prettier %>",
+    "eslint-plugin-vue": "<%= eslint-plugin-vue %>",
+    "prettier": "<%= prettier %>",
+<% } else { %>
+    "typescript": "<%= typescript %>"
+<% } %>
   }
 }
