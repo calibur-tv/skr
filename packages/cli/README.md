@@ -26,3 +26,6 @@ skr -h
 4. 使用`skr release`更新版本
 
 更多提供的脚本，使用`skr -h`查看
+
+## Todo
+- [ ] init url 支持继承

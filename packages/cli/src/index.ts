@@ -58,7 +58,12 @@ skr
   .option('--self, -S', '更新自己的版本')
   .action(release)
 
-skr.command('deploy', '部署脚本').action(deploy)
+skr
+  .command('deploy', '部署项目')
+  .option('--script [script]', '部署脚本')
+  .option('--project [project]', '项目名')
+  .option('--command [command]', '脚本名')
+  .action(deploy)
 
 skr.version(version)
 
