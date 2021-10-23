@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import ejs from 'ejs'
 import { spawn, exec } from 'child-process-promise'
 import toposort from 'toposort'
 import urllib from 'urllib'
@@ -55,7 +56,8 @@ const getRepositoryPackages = async (noPrivate = false) => {
 const getRemotePackageInfo = async (
   nameWithSubpath: string,
   download = true,
-  onlyCheck = false
+  onlyCheck = false,
+  ejsConfig = {}
 ) => {
   const arr = nameWithSubpath.split('#')
   const name = arr[0]
@@ -80,6 +82,7 @@ const getRemotePackageInfo = async (
     if (/_1A_|_2B_|_3C_|_4D_/.test(packageStrs)) {
       return
     }
+    packageStrs = ejs.render(packageStrs, ejsConfig)
     const packageJson = JSON.parse(packageStrs)
     const dependencies = {
       ...packageJson.dependencies,
