@@ -82,7 +82,7 @@ const getRemotePackageInfo = async (
     if (/_1A_|_2B_|_3C_|_4D_/.test(packageStrs)) {
       return
     }
-    packageStrs = ejs.render(packageStrs, ejsConfig)
+    // packageStrs = ejs.render(packageStrs, ejsConfig)
     const packageJson = JSON.parse(packageStrs)
     const dependencies = {
       ...packageJson.dependencies,

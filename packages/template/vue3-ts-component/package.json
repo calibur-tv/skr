@@ -24,7 +24,6 @@
     "vite": "<%= vite %>",
     "vite-plugin-host": "<%= vite-plugin-host %>",
     "vue-tsc": "<%= vue-tsc %>",
-<% if (isMonorepo) { %>
     "@types/node": "<%= @types/node %>",
     "@typescript-eslint/eslint-plugin": "<%= @typescript-eslint/eslint-plugin %>",
     "@typescript-eslint/parser": "<%= @typescript-eslint/eslint-plugin %>",
@@ -34,8 +33,6 @@
     "eslint-plugin-prettier": "<%= eslint-plugin-prettier %>",
     "eslint-plugin-vue": "<%= eslint-plugin-vue %>",
     "prettier": "<%= prettier %>",
-<% } else { %>
     "typescript": "<%= typescript %>"
-<% } %>
   }
 }
