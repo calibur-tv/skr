@@ -1,4 +1,4 @@
-import axios from 'axios'
+import fetch from '../utils/fetch'
 import { execCommand } from '../utils'
 import { version } from '../../../template/package.json'
 import configManager from '../manager/config'
@@ -21,7 +21,7 @@ export default async (opts: Record<string, any>) => {
   }
   const requestUrl = opts.url || DEFAULT_JSON
   console.log('loading init file...', requestUrl)
-  const resp = await axios.get(requestUrl)
-  resp.data && configManager.set(resp.data)
+  const resp = await fetch(requestUrl)
+  resp && configManager.set(JSON.parse(resp))
   console.log('skr init success！')
 }

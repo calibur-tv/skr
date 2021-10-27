@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import ejs from 'ejs'
-import axios from 'axios'
+import fetch from './fetch'
 import { ejsRegex, getRemotePackageInfo } from './index'
 
 const TEMPLATE_CONF_FILE = '.template.js'
@@ -42,7 +42,7 @@ const writeTemplate = async (
   if (isFunction(configScript?.beforeCheckVersion)) {
     const hook1Data = await configScript.beforeCheckVersion(
       { ...configResult },
-      axios
+      fetch
     )
     configResult = {
       ...configResult,
@@ -69,7 +69,7 @@ const writeTemplate = async (
 
     const versionArr = await Promise.all(
       needCheck.map((_: string) =>
-        getRemotePackageInfo(unescpaeEjsKey(_), false, true, configResult)
+        getRemotePackageInfo(unescpaeEjsKey(_), false, true)
       )
     )
     versionArr.forEach((item: any) => {
@@ -85,7 +85,7 @@ const writeTemplate = async (
   if (isFunction(configScript?.afterCheckVersion)) {
     const hook2Data = await configScript.afterCheckVersion(
       { ...configResult },
-      axios
+      fetch
     )
     configResult = {
       ...configResult,
@@ -97,7 +97,7 @@ const writeTemplate = async (
     const hook3Data = await configScript.beforeCopyFiles(
       { ...configResult },
       [...files],
-      axios
+      fetch
     )
     if (hook3Data) {
       files = hook3Data
@@ -115,7 +115,7 @@ const writeTemplate = async (
   }
 
   if (isFunction(configScript?.afterCopyFiles)) {
-    await configScript.afterCopyFiles({ ...configResult }, axios)
+    await configScript.afterCopyFiles({ ...configResult }, fetch)
   }
 }
 

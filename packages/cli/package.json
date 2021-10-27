@@ -11,14 +11,16 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "axios": "^0.22.0",
-    "cac": "^6.7.8",
+    "cac": "^6.7.11",
     "change-case": "^4.1.2",
     "child-process-promise": "^2.2.1",
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
     "fs-extra": "^10.0.0",
+    "https": "^1.0.0",
+    "https-proxy-agent": "^5.0.0",
     "toposort": "^2.0.2",
+    "url": "^0.11.0",
     "urllib": "^2.37.4"
   },
   "devDependencies": {
@@ -28,7 +30,7 @@
     "@types/fs-extra": "^9.0.13",
     "@types/toposort": "^2.0.3",
     "compressing": "^1.5.1",
-    "tsup": "^5.4.0"
+    "tsup": "^5.5.0"
   },
   "gitHead": "4d83b2dea3b033d20c5e0c5eb590c12e92337eeb"
 }

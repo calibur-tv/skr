@@ -87,7 +87,7 @@ export default async (name: string, opts: Record<string, any>) => {
 
   const packages: Record<string, any>[] = await Promise.all(
     templateInfo.urls.map((pkgName: string) =>
-      getRemotePackageInfo(pkgName, !!opts.noCache, false, ejsConfig)
+      getRemotePackageInfo(pkgName, !!opts.noCache)
     )
   )
 
