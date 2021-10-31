@@ -44,15 +44,15 @@ skr create <project-name> --template=<template-name>
 skr -h
 ```
 
-- skr init
-- skr upgrade
-- skr create
-- skr template
-- skr boot
-- skr run
-- skr add
-- skr release
-- skr deploy
+- [skr init](https://github.com/calibur-tv/skr#skr-init)
+- [skr upgrade](https://github.com/calibur-tv/skr#skr-upgrade)
+- [skr create](https://github.com/calibur-tv/skr#skr-create)
+- [skr template](https://github.com/calibur-tv/skr#skr-template)
+- [skr boot](https://github.com/calibur-tv/skr#skr-boot)
+- [skr run](https://github.com/calibur-tv/skr#skr-run)
+- [skr add](https://github.com/calibur-tv/skr#skr-add)
+- [skr release](https://github.com/calibur-tv/skr#skr-release)
+- [skr deploy](https://github.com/calibur-tv/skr#skr-deploy)
 
 查看单个指令详情
 
