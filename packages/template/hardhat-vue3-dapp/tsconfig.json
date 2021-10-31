@@ -20,5 +20,5 @@
     "frentend/**/*.tsx",
     "frentend/**/*.vue"
   ],
-  "files": ["./hardhat.config.ts"]
+  "files": ["_hardhat.config.ts"]
 }

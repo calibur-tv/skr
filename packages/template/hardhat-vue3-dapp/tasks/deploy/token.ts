@@ -8,9 +8,20 @@ task('deploy:Token')
   .addOptionalParam('name', 'the token name', 'echo')
   .setAction(
     async (TaskArguments, { artifacts, config, ethers, network, run }) => {
+      // This is just a convenience check
+      if (network.name === 'hardhat') {
+        console.warn(
+          'You are trying to deploy a contract to the Hardhat Network, which' +
+            'gets automatically created and destroyed every time. Use the Hardhat' +
+            " option '--network localhost'"
+        )
+      }
       const [deployer] = await ethers.getSigners()
 
-      console.log('Deploying contracts with the account:', deployer.address)
+      console.log(
+        'Deploying contracts with the account:',
+        await deployer.getAddress()
+      )
       console.log('Account balance:', (await deployer.getBalance()).toString())
       const Token: Token__factory = await ethers.getContractFactory('Token')
       const token: Token = <Token>await Token.deploy(TaskArguments.name)

@@ -10,7 +10,7 @@ import './tasks'
 dotenv.config()
 
 const config: HardhatUserConfig = {
-  solidity: '<%= solidity %>',
+  solidity: '0.8.5',
   gasReporter: {
     currency: 'USD',
     enabled: true
