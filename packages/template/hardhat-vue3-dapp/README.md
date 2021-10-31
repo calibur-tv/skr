@@ -17,6 +17,7 @@ npm install
 Once installed, let's run Hardhat's testing network:
 
 ```sh
+npm run typechain
 npx hardhat node
 ```
 
