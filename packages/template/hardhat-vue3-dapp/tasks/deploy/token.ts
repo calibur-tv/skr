@@ -2,7 +2,7 @@ import fs from 'fs'
 import { join } from 'path'
 import { task } from 'hardhat/config'
 import { Artifacts } from 'hardhat/types'
-import { Token, Token__factory } from '../../typechain'
+import { Token } from '../../typechain-types'
 
 task('deploy:Token')
   .addOptionalParam('name', 'the token name', 'echo')
@@ -23,7 +23,7 @@ task('deploy:Token')
         await deployer.getAddress()
       )
       console.log('Account balance:', (await deployer.getBalance()).toString())
-      const Token: Token__factory = await ethers.getContractFactory('Token')
+      const Token = await ethers.getContractFactory('Token')
       const token: Token = <Token>await Token.deploy(TaskArguments.name)
 
       await token.deployed()

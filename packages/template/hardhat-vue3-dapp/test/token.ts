@@ -2,7 +2,7 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import { expect } from 'chai'
 import { ethers } from 'hardhat'
 import { BigNumber } from 'ethers'
-import { Token } from '../typechain'
+import { Token } from '../typechain-types'
 
 describe('Token contract', function () {
   // Mocha has four functions that let you hook into the the test runner's
