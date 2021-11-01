@@ -51,7 +51,7 @@ skr -h
 - [skr boot](https://github.com/calibur-tv/skr#skr-boot)
 - [skr run](https://github.com/calibur-tv/skr#skr-run)
 - [skr add](https://github.com/calibur-tv/skr#skr-add)
-- [skr release](https://github.com/calibur-tv/skr#skr-release)
+- [skr version](https://github.com/calibur-tv/skr#skr-version)
 - [skr deploy](https://github.com/calibur-tv/skr#skr-deploy)
 
 查看单个指令详情
@@ -72,6 +72,10 @@ skr create -h
 
 创建项目，你可以选择自己创建一个模板，如果执行`create`的当前目录是 lerna monorepo 的根目录，则会自动把项目添加到 workspace。
 
+### `skr template`
+
+本地模板的`CURD`操作
+
 ### `skr boot`
 
 构建某个 package 的所有依赖，可通过`--clean` 来删除 `node_modules`（类似`lerna clean`），但是`boot`会根据所选项目依赖的拓扑结构去构建本地依赖，减少了麻烦。
@@ -84,9 +88,9 @@ skr create -h
 
 类似于`lerna add`，简化了命令无需输入 `scope`，取而代之的是命令行选项来选择。
 
-### `skr release`
+### `skr version`
 
-类似于`lerna publish`，但只会发布你所选的项目，并根据选项依赖的拓扑结构执行每个依赖的`publish`命令。
+类似于`lerna version`，但只会发布你所选的项目，并根据选项依赖的拓扑结构执行每个依赖的`publish`命令。
 
 ### `skr deploy`
 

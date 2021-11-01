@@ -5,7 +5,7 @@ import {
   promptWithDefault
 } from '../utils'
 
-const versionType = [
+const releaseType = [
   'major',
   'minor',
   'patch',
@@ -22,16 +22,16 @@ export default async (name: string, opts: Record<string, any>) => {
     default: name
   })
 
-  const version =
-    opts.version ||
+  const release =
+    opts.release ||
     (await promptWithDefault({
-      choices: versionType
+      choices: releaseType
     }))
 
   const dependencies = await getPackageDependencies(name, opts.self)
   const command = [
-    version,
-    /pre/.test(version) ? '--preid beta' : '',
+    release,
+    /pre/.test(release) ? '--preid beta' : '',
     '--exact',
     '--no-private',
     `--force-publish=${dependencies.join(',')}`,

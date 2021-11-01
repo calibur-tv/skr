@@ -19,7 +19,7 @@ export default async (
   const { list } = await getRepositoryPackages()
   const name = await promptWithDefault({
     choices: list,
-    default: opts.name
+    default: opts.scope
   })
 
   await execCommand(`lerna exec --scope=${name} -- npm run ${script}`)

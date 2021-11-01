@@ -2,22 +2,23 @@ import { getRepositoryPackages, execCommand, promptWithDefault } from '../utils'
 
 export default async (
   names: string[],
-  options: Record<string, any>
+  opts: Record<string, any>
 ): Promise<any> => {
   const { list } = await getRepositoryPackages()
   const name = await promptWithDefault({
-    choices: list
+    choices: list,
+    default: opts.scope
   })
 
   for (let i = 0; i < names.length; i++) {
     let script = `lerna add ${names[i]} --scope=${name}`
-    if (options.dev) {
+    if (opts.dev) {
       script += ' --dev'
-    } else if (options.peer) {
+    } else if (opts.peer) {
       script += ' --peer'
     }
 
-    if (options.exact) {
+    if (opts.exact) {
       script += ' --exact'
     }
 

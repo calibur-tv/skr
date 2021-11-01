@@ -42,7 +42,7 @@ export default async (name: string, opts: Record<string, any>) => {
 
   const cwd = process.cwd()
   const isMonorepo = fs.existsSync(path.join(cwd, 'lerna.json'))
-  let subpath = opts.dest || ''
+  let subpath = opts.loc || ''
   if (!subpath && isMonorepo) {
     const workspace = JSON.parse(
       await fs.promises.readFile(path.join(cwd, 'lerna.json'), 'utf-8')
@@ -62,7 +62,7 @@ export default async (name: string, opts: Record<string, any>) => {
   }
 
   if (!isEmptyDir(dest)) {
-    if (!opts.force) {
+    if (!opts.remove) {
       const answer = await confirmWithExit(
         'Target directory is not empty. Remove existing files and continue?'
       )
@@ -87,7 +87,7 @@ export default async (name: string, opts: Record<string, any>) => {
 
   const packages: Record<string, any>[] = await Promise.all(
     templateInfo.urls.map((pkgName: string) =>
-      getRemotePackageInfo(pkgName, !!opts.noCache)
+      getRemotePackageInfo(pkgName, !!opts.force)
     )
   )
 

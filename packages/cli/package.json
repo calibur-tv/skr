@@ -31,6 +31,5 @@
     "@types/toposort": "^2.0.3",
     "compressing": "^1.5.1",
     "tsup": "^5.5.0"
-  },
-  "gitHead": "4d83b2dea3b033d20c5e0c5eb590c12e92337eeb"
+  }
 }
