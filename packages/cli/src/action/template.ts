@@ -6,12 +6,12 @@ export default async (
   opts: Record<string, any>
 ) => {
   const config = configManager.get()
-  const templates = config.templates || []
+  const templates = config.templates || {}
 
   if (opts.list) {
     console.log('\ntemplate list：\n')
-    templates.forEach((item: any) => {
-      console.log(`- ${item.name}`)
+    Object.keys(templates).forEach((name: string) => {
+      console.log(`- ${name}`)
     })
     return
   }
@@ -22,14 +22,7 @@ export default async (
   }
 
   if (opts.remove) {
-    const index = templates.findIndex(
-      (_: Record<string, any>) => _.name === name
-    )
-    if (index === -1) {
-      return
-    }
-
-    templates.splice(index, 1)
+    delete templates[name]
     configManager.set({ templates })
     return
   }
@@ -38,10 +31,9 @@ export default async (
     return
   }
 
-  templates.push({
-    name,
+  templates[name] = {
     desc: opts.desc || urls.join(' + '),
     urls
-  })
+  }
   configManager.set({ templates })
 }

@@ -4,6 +4,21 @@ import { version } from '../../../template/package.json'
 import configManager from '../manager/config'
 
 const DEFAULT_JSON = `https://cdn.jsdelivr.net/gh/calibur-tv/skr@main/packages/template/init.json?v=${version}`
+const extendData = new Set()
+
+const request = async (
+  url: string,
+  data: Record<string, any>
+): Promise<void> => {
+  console.log('loading init file...', url)
+  const resp = await fetch(url)
+  const json = resp ? JSON.parse(resp) : {}
+  if (json.extends && !extendData.has(json.extends)) {
+    extendData.add(json.extends)
+    await request(json.extends, data)
+  }
+  data = Object.assign({}, json, data)
+}
 
 export default async (opts: Record<string, any>) => {
   console.log('skr init start！')
@@ -20,8 +35,8 @@ export default async (opts: Record<string, any>) => {
     await execCommand('npm install yarn -g')
   }
   const requestUrl = opts.url || DEFAULT_JSON
-  console.log('loading init file...', requestUrl)
-  const resp = await fetch(requestUrl)
-  resp && configManager.set(JSON.parse(resp))
+  const respData = {}
+  await request(requestUrl, respData)
+  configManager.set(respData)
   console.log('skr init success！')
 }

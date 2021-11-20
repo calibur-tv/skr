@@ -21,20 +21,18 @@ export default async (name: string, opts: Record<string, any>) => {
     failed: () => console.log('非法的项目名')
   })
   const config = configManager.get()
-  const templates = config.templates || []
-  if (!templates.length) {
+  const templates = config.templates || {}
+  if (!Object.keys(templates).length) {
     console.log('请先通过 template 命令创建模板')
     return
   }
 
   const templateName = await promptWithDefault({
-    choices: templates.map((_: Record<string, any>) => _.name),
+    choices: Object.keys(templates),
     default: opts.template,
     message: '请选择模板'
   })
-  const templateInfo = templates.find(
-    (_: Record<string, any>) => _.name === templateName
-  )
+  const templateInfo = templates[templateName]
   if (!templateInfo) {
     console.log('不存在的 template')
     return

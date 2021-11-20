@@ -1,25 +1,28 @@
 {
-  "templates": [
-    {
-      "name": "vue3-ts-component",
+  "templates": {
+    "vue3-ts-component": {
       "desc": "",
       "urls": [
         "@calibur/skr-template#vue3-ts-component"
       ]
     },
-    {
-      "name": "vue3-ts-monorepo",
+    "vue3-ts-monorepo": {
       "desc": "",
       "urls": [
         "@calibur/skr-template#vue3-ts-monorepo"
       ]
     },
-    {
-      "name": "hardhat-vue3-dapp",
+    "typescript-component": {
+      "desc": "",
+      "urls": [
+        "@calibur/skr-template#typescript-component"
+      ]
+    },
+    "hardhat-vue3-dapp": {
       "desc": "",
       "urls": [
         "@calibur/skr-template#hardhat-vue3-dapp"
       ]
     }
-  ]
+  }
 }
