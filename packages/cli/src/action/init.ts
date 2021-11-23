@@ -17,7 +17,7 @@ const request = async (
     extendData.add(json.extends)
     await request(json.extends, data)
   }
-  data = Object.assign({}, json, data)
+  data = Object.assign(data, json)
 }
 
 export default async (opts: Record<string, any>) => {
