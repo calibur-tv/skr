@@ -48,9 +48,9 @@ skr
 skr
   .command('add [...name]', '增加项目依赖')
   .option('--scope [scope]', '项目名称')
-  .option('--dev', '添加包到 devDependencies')
-  .option('--peer', '添加包到 peerDependencies')
-  .option('--exact', '锁死版本')
+  .option('--dev, -D', '添加包到 devDependencies')
+  .option('--peer, -P', '添加包到 peerDependencies')
+  .option('--exact, -E', '锁死版本')
   .action(add)
 
 skr
