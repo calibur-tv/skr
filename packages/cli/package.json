@@ -1,6 +1,6 @@
 {
   "name": "@calibur/skr-cli",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "./dist/index.js",
   "bin": {
     "skr": "./dist/index.js"
