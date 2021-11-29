@@ -98,7 +98,8 @@ skr create -h
 
 ## Todos
 
-- [ ] `skr init --url`支持 extends 语法
+- [x] `skr init --url`支持 extends 语法
 - [ ] 调整各个命令的名称和参数，减少和`leran`的差异。
+- [ ] 支持`create`时传入自定义的`confirm`
 
 License (MIT) 📚

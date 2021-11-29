@@ -1,1 +1,1 @@
-# Typescript Component
+# <%= name.capitalCase %>

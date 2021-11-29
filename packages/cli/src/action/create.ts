@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { pascalCase, paramCase, camelCase } from 'change-case'
+import { pascalCase, paramCase, camelCase, capitalCase } from 'change-case'
 import {
   promptWithDefault,
   getRemotePackageInfo,
@@ -76,7 +76,8 @@ export default async (name: string, opts: Record<string, any>) => {
   const nameObj = {
     pascalCase: pascalCase(name),
     paramCase: paramCase(name),
-    camelCase: camelCase(name)
+    camelCase: camelCase(name),
+    capitalCase: capitalCase(name)
   }
   const ejsConfig = {
     name: nameObj,

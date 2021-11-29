@@ -1,4 +1,4 @@
-# <%= name.paramCase %>
+# <%= name.capitalCase %>
 
 ## Guide
 
