@@ -153,7 +153,11 @@ const getPackageDependencies = async (packageName: string, withSelf = true) => {
       list: Record<string, any>[]
     ): Promise<string[]> => {
       const json = await getPkgJson(name)
-      const dependencies = Object.keys(json?.dependencies || {})
+      const dependencies = [
+        ...Object.keys(json?.dependencies || {}),
+        ...Object.keys(json?.devDependencies || {}),
+        ...Object.keys(json?.peerDependencies || {})
+      ]
       return list
         .filter((_) => dependencies.includes(_.name))
         .map((_) => _.name)

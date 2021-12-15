@@ -39,6 +39,7 @@ skr
 skr
   .command('boot [name]', '收集项目依赖')
   .option('--clean', '清理 node_modules')
+  .option('--self', '是否包含当前项目')
   .action(boot)
 
 skr

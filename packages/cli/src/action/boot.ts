@@ -16,7 +16,7 @@ export default async (packageName: string, options: Record<string, any>) => {
     await execCommand('lerna clean --yes')
   }
 
-  const dependencies = await getPackageDependencies(packageName)
+  const dependencies = await getPackageDependencies(packageName, !!options.self)
   for (let i = 0; i < dependencies.length; i++) {
     const item = detail.find(
       (_: Record<string, string>) => _.name === dependencies[i]
