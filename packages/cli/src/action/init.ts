@@ -21,15 +21,15 @@ const extendData = new Set()
 const request = async (
   url: string,
   data: Record<string, any>
-): Promise<void> => {
+): Promise<Record<string, any>> => {
   console.log('loading init file...', url)
   const resp = await fetch(url)
   const json = resp ? JSON.parse(resp) : {}
   if (json.extends && !extendData.has(json.extends)) {
     extendData.add(json.extends)
-    await request(json.extends, data)
+    data = await request(json.extends, data)
   }
-  data = extDefu(json, data)
+  return extDefu(json, data)
 }
 
 export default async (options: Record<string, any>) => {
@@ -51,8 +51,7 @@ export default async (options: Record<string, any>) => {
       await execCommand('npm install yarn -g')
     }
     const requestUrl = options.url || DEFAULT_JSON
-    const respData = {}
-    await request(requestUrl, respData)
+    const respData = await request(requestUrl, {})
     configManager.set(respData)
   }
   console.log('skr init success！')
