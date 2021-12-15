@@ -2163,6 +2163,11 @@ define-properties@^1.1.3:
   dependencies:
     object-keys "^1.0.12"
 
+defu@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.nlark.com/defu/download/defu-5.0.0.tgz?cache=0&sync_timestamp=1620839321920&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fdefu%2Fdownload%2Fdefu-5.0.0.tgz#5768f0d402a555bfc4c267246b20f82ce8b5a10b"
+  integrity sha1-V2jw1AKlVb/EwmckayD4LOi1oQs=
+
 degenerator@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/degenerator/-/degenerator-3.0.1.tgz#7ef78ec0c8577a544477308ddf1d2d6e88d51f5b"

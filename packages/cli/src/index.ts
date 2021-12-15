@@ -16,6 +16,7 @@ const skr = cac('skr')
 skr
   .command('init', '初始化脚手架')
   .option('--url [url]', '初始化文件')
+  .option('--pkg [pkg]', '初始化项目')
   .action(init)
 
 skr.command('upgrade', '升级脚手架').action(upgrade)

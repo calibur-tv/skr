@@ -62,7 +62,7 @@ skr create -h
 
 ### `skr init`
 
-初始化脚手架依赖（yarn 和 lerna），可以通过 `--url=<配置文件地址>` 来修改默认的配置文件列表。
+初始化脚手架依赖（yarn 和 lerna），可以通过 `--url=<配置文件地址>` 来修改默认的配置文件列表；可以通过`--pkg=<packageName>`来指定要安装依赖的包。
 
 ### `skr upgrade`
 
