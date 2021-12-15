@@ -54,8 +54,6 @@ export default async (options: Record<string, any>) => {
     const respData = {}
     await request(requestUrl, respData)
     configManager.set(respData)
-    await execCommand('yarn')
-    await execCommand('lerna run build')
   }
   console.log('skr init success！')
 }
