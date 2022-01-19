@@ -9,7 +9,7 @@
     "deploy": "npm run test && npm run compile && hardhat deploy:Token --name 'NFT' --network 'localhost'",
     "test": "npm run typechain && npm run test:unit && npm run test:coverage",
     "test:unit": "hardhat test",
-    "test:coverage": "cross-env CODE_COVERAGE=true hardhat coverage --solcoverjs ./.solcover.js --temp artifacts --testfiles \"./test/**/*.ts\"",
+    "test:coverage": "cross-env CODE_COVERAGE=true hardhat coverage --solcoverjs ./.solcover.js --temp artifacts",
     "lint": "npm run lint:vue && npm run lint:sol && npm run prettier",
     "lint:vue": "eslint --ext js,jsx,ts,tsx,vue . --fix",
     "lint:sol": "solhint --config ./.solhint.json --max-warnings 0 \"contracts/**/*.sol\"",
